@@ -119,6 +119,8 @@ export default {
           color: white;
           cursor: pointer;
           
+          transition: background-color 0.5s ease, transform 0.5s ease;
+          
           &:hover {
             background-color: red;
           }
