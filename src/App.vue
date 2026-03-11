@@ -112,10 +112,9 @@ export default {
         text-align: center;
 
         button {
-          font-size: 0.75em;
           border-radius: 50%;
           border: none;
-          background-color: lightgrey;
+          background-color: rgb(228, 228, 228);
           color: white;
           cursor: pointer;
           
@@ -139,7 +138,7 @@ export default {
       .choosing-label {
         font-size: 2em;
         height: 1em;
-        color: green;
+        color: #007BFF;
       }
 
       select {
