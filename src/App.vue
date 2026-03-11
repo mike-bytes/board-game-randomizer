@@ -3,27 +3,27 @@ export default {
   name: 'GameRandomizer',
   data() {
     return {
-      // games: [
-      //   'Catan', 'Ticket to Ride: Europe', 'Codenames Duet', 'Trickster: Spades', 'Pandemic'
-      // ],
-      games: [
+      gamesOnline: [
+        'Catan', 'Ticket to Ride: Europe', 'Codenames Duet', 'Trickster: Spades', 'Pandemic'
+      ],
+      gamesInPerson: [
         '7 Wonders Duel',
-        'Spirit Island + Horizons of Spirit Island',
+        'Spirit Island',
         'Bomb Busters',
         'Cascadia',
         'Quest for El Dorado',
         'Sky Team',
-        'Mission Deep Sea',
-        'Clank',
+        'The Crew: Mission Deep Sea',
+        'Clank!',
         'Harmonies',
         'Ticket to Ride',
         'Critter Kitchen',
         'Flamecraft',
         'Res Arcana',
         'Vale of Eternity',
-        'Quacks Deluxe',
+        'Quacks',
         'Everdell',
-        'Wingspan + Oceania',
+        'Wingspan / Oceania',
         'Azul',
         'Flip 7',
         'Summer Camp',
@@ -32,15 +32,22 @@ export default {
         'Catan',
         'Machi Koro Bright Lights',
         'Takenoko',
-        'Sabobatage',
-        'Dutch Blitz',
-        'Happy Dim Sum'
+        'Sabobatage'
       ],
       chosenGame: null,
-      labelClasses: ['chosen']
+      choice: 'Online'
     };
   },
   computed: {
+    games() {
+      switch(this.choice) {
+        case 'Online':
+          return this.gamesOnline;
+        case 'In Person':
+          return this.gamesInPerson;
+      }
+      return [];
+    },
     sortedGames() {
       return [...this.games].sort((a, b) => a.localeCompare(b));
     }
@@ -61,37 +68,97 @@ export default {
           this.chosenGame = this.getRandomGame();
         }, i * 10);
       }
-      // setTimeout(() => {
-      //   if (!this.labelClasses.includes('chosen')) {
-      //     this.labelClasses.push('chosen');
-      //   }
-      // }, 1000);
     }
   }
 }
 </script>
 
 <template>
-  <h1>Board Game Randomizer</h1>
-  <p>
-    <ul>
+  <div class="page">
+    <h1>Board Game Randomizer</h1>
+    <div class="choosing-section">
+      <button @click="randomizeGame">Random Game</button>
+      <p class="choosing-label">{{ chosenGame }}</p>
+      <select v-model="choice" @change="chosenGame = null">
+        <option value="Online">Online</option>
+        <option value="In Person">In Person</option>
+      </select>
+    </div>
+    <div class="games-list">
       <div v-for="game in sortedGames" :key="game">
         <button @click="removeGame(game)">x</button>
         {{ game }}
       </div>
-    </ul>
-    <button @click="randomizeGame">Random Game</button>
-    <p v-if="chosenGame">Chosen Game: <label :class="labelClasses">{{ chosenGame }}</label></p>
-  </p>
+    </div>
+  </div>
 </template>
 
-<style>
-  #app {
-    font: Avenir, Helvetica, Arial, sans-serif;
-    font-size: 1.2em;
-  }
-  .chosen {
-    font-size: 2em;
-    color: green;
+<style lang="scss">
+  .page {
+    h1 {
+      text-align: center;
+    }
+
+    font-family: 'Arial', sans-serif;
+
+    .games-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 0.5em;
+
+      div {
+        align-items: center;
+        padding: 10px;
+        text-align: center;
+
+        button {
+          font-size: 0.75em;
+          border-radius: 50%;
+          border: none;
+          background-color: lightgrey;
+          color: white;
+          cursor: pointer;
+          
+          &:hover {
+            background-color: red;
+          }
+
+        }
+      }
+    }
+
+    .choosing-section {
+      margin-bottom: 2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1em;
+
+      .choosing-label {
+        font-size: 2em;
+        height: 1em;
+        color: green;
+      }
+
+      select {
+        padding: 0.5em;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      button {
+        font-size: 1.25em;
+        padding: 0.5em 1em;
+        border-radius: 5px;
+        border: none;
+        background-color: #007BFF;
+        color: white;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+    }
   }
 </style>
