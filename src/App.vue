@@ -4,7 +4,7 @@ export default {
   data() {
     return {
       gamesOnline: [
-        'Catan', 'Ticket to Ride: Europe', 'Codenames Duet', 'Trickster: Spades', 'Pandemic'
+        'Catan', 'Ticket to Ride: Europe', 'Codenames Duet', 'Trickster: Spades', 'Pandemic', 'Spirit Island'
       ],
       gamesInPerson: [
         '7 Wonders Duel',
