@@ -10,6 +10,7 @@ export default {
         'Trickster: Spades',
         'Pandemic',
         'Spirit Island',
+        'Set',
       ],
       gamesInPerson: [
         '7 Wonders Duel',
@@ -42,6 +43,7 @@ export default {
       chosenGame: null,
       choice: 'Online',
       picking: false,
+      customGames: [], // user-selected subset
     };
   },
   computed: {
@@ -51,11 +53,16 @@ export default {
           return this.gamesOnline;
         case 'In Person':
           return this.gamesInPerson;
+        case 'Custom':
+          return this.customGames;
       }
       return [];
     },
     sortedGames() {
       return [...this.games].sort((a, b) => a.localeCompare(b));
+    },
+    sortedGamesInPerson() {
+      return [...this.gamesInPerson].sort((a, b) => a.localeCompare(b));
     },
   },
   methods: {
@@ -88,6 +95,21 @@ export default {
       }
       this.picking = false;
     },
+    toggleCustomGame(game) {
+      const index = this.customGames.indexOf(game);
+      if (index === -1) {
+        this.customGames.push(game);
+      } else {
+        this.customGames.splice(index, 1);
+      }
+    },
+    customGameClasses(game) {
+      const classes = [];
+      if (this.customGames.includes(game)) {
+        classes.push('chosen');
+      }
+      return classes;
+    },
   },
 };
 </script>
@@ -96,13 +118,35 @@ export default {
   <div class="page">
     <h1>Board Game Randomizer</h1>
     <div class="choosing-section">
-      <button :disabled="picking" @click="randomizeGame">Random Game</button>
+      <button :disabled="picking || !games.length" @click="randomizeGame">
+        Random Game
+      </button>
       <p class="choosing-label">{{ chosenGame }}</p>
       <select v-model="choice" @change="chosenGame = null">
         <option value="Online">Online</option>
         <option value="In Person">In Person</option>
+        <option value="Custom">Custom</option>
       </select>
     </div>
+
+    <div v-if="choice === 'Custom'" class="custom-selection">
+      <p class="custom-selection-label">Choose games to include:</p>
+      <div class="games-custom-picker">
+        <div
+          class="custom-games"
+          v-for="game in sortedGamesInPerson"
+          :key="game"
+        >
+          <label :class="customGameClasses(game)">
+            {{ game }}
+          </label>
+          <button @click="toggleCustomGame(game)">
+            {{ customGames.includes(game) ? '−' : '+' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <TransitionGroup name="game" tag="div" class="games-list" :key="choice">
       <div
         v-for="game in sortedGames"
@@ -125,6 +169,35 @@ $chosen-colour: #007bff;
   }
 
   font-family: 'Arial', sans-serif;
+
+  .custom-selection {
+    background-color: lightgray;
+    padding: 20px;
+    margin-bottom: 2em;
+
+    .custom-selection-label {
+      margin-bottom: 1.5em;
+      display: flex;
+      justify-content: center;
+    }
+    .games-custom-picker {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5em;
+
+      .custom-games {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5em;
+      }
+      .chosen {
+        color: $chosen-colour;
+        // font-weight: bold;
+        font-size: 1.1em;
+      }
+    }
+  }
 
   .games-list {
     display: grid;
@@ -176,7 +249,7 @@ $chosen-colour: #007bff;
   }
   .game-enter-active,
   .game-leave-active {
-    transition: all 0.5s ease;
+    transition: all 0.2s ease;
   }
 
   .choosing-section {
