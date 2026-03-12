@@ -4,7 +4,12 @@ export default {
   data() {
     return {
       gamesOnline: [
-        'Catan', 'Ticket to Ride: Europe', 'Codenames Duet', 'Trickster: Spades', 'Pandemic', 'Spirit Island'
+        'Catan',
+        'Ticket to Ride: Europe',
+        'Codenames Duet',
+        'Trickster: Spades',
+        'Pandemic',
+        'Spirit Island',
       ],
       gamesInPerson: [
         '7 Wonders Duel',
@@ -32,15 +37,16 @@ export default {
         'Catan',
         'Machi Koro Bright Lights',
         'Takenoko',
-        'Sabobatage'
+        'Sabobatage',
       ],
       chosenGame: null,
-      choice: 'Online'
+      choice: 'Online',
+      picking: false,
     };
   },
   computed: {
     games() {
-      switch(this.choice) {
+      switch (this.choice) {
         case 'Online':
           return this.gamesOnline;
         case 'In Person':
@@ -50,9 +56,16 @@ export default {
     },
     sortedGames() {
       return [...this.games].sort((a, b) => a.localeCompare(b));
-    }
+    },
   },
   methods: {
+    gameItemClasses(game) {
+      const classes = ['game-item'];
+      if (game === this.chosenGame) {
+        classes.push('chosen');
+      }
+      return classes;
+    },
     getRandomGame() {
       const randomIndex = Math.floor(Math.random() * this.games.length);
       return this.games[randomIndex];
@@ -63,103 +76,159 @@ export default {
       }
     },
     async randomizeGame() {
-      for (let i=0; i<100; i++) {
-        setTimeout(() => {
-          this.chosenGame = this.getRandomGame();
-        }, i * 10);
+      if (this.picking) return;
+      this.picking = true;
+
+      const PICKS = 100;
+      const DELAY = 10;
+
+      for (let i = 0; i < PICKS; i++) {
+        this.chosenGame = this.getRandomGame();
+        await new Promise((resolve) => setTimeout(resolve, DELAY));
       }
-    }
-  }
-}
+      this.picking = false;
+    },
+  },
+};
 </script>
 
 <template>
   <div class="page">
     <h1>Board Game Randomizer</h1>
     <div class="choosing-section">
-      <button @click="randomizeGame">Random Game</button>
+      <button :disabled="picking" @click="randomizeGame">Random Game</button>
       <p class="choosing-label">{{ chosenGame }}</p>
       <select v-model="choice" @change="chosenGame = null">
         <option value="Online">Online</option>
         <option value="In Person">In Person</option>
       </select>
     </div>
-    <div class="games-list">
-      <div v-for="game in sortedGames" :key="game">
+    <TransitionGroup name="game" tag="div" class="games-list" :key="choice">
+      <div
+        v-for="game in sortedGames"
+        :key="game"
+        :class="gameItemClasses(game)"
+      >
         <button @click="removeGame(game)">x</button>
         {{ game }}
       </div>
-    </div>
+    </TransitionGroup>
   </div>
 </template>
 
 <style lang="scss">
-  .page {
-    h1 {
-      text-align: center;
-    }
+$chosen-colour: #007bff;
 
-    font-family: 'Arial', sans-serif;
+.page {
+  h1 {
+    text-align: center;
+  }
 
-    .games-list {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); 
-      gap: 0.5em;
+  font-family: 'Arial', sans-serif;
 
-      div {
-        align-items: center;
-        padding: 10px;
-        text-align: center;
+  .games-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5em;
+    margin-bottom: 5em;
 
-        button {
-          border-radius: 50%;
-          border: none;
-          background-color: rgb(228, 228, 228);
-          color: white;
-          cursor: pointer;
-          
-          transition: background-color 0.5s ease, transform 0.5s ease;
-          
-          &:hover {
-            background-color: red;
-          }
-
-        }
-      }
-    }
-
-    .choosing-section {
-      margin-bottom: 2em;
+    .game-item {
       display: flex;
-      flex-direction: column;
+      position: relative;
       align-items: center;
-      gap: 1em;
+      justify-content: center;
+      gap: 0.5em;
+      padding: 5px;
+      height: 30px;
 
-      .choosing-label {
-        font-size: 2em;
-        height: 1em;
-        color: #007BFF;
-      }
-
-      select {
-        padding: 0.5em;
-        border-radius: 5px;
-        border: 1px solid #ccc;
+      &.chosen {
+        color: $chosen-colour;
+        font-weight: bold;
+        font-size: 1.2em;
+        animation: winner 0.3s ease;
       }
 
       button {
-        font-size: 1.25em;
-        padding: 0.5em 1em;
-        border-radius: 5px;
+        border-radius: 50%;
         border: none;
-        background-color: #007BFF;
+        background-color: rgb(228, 228, 228);
         color: white;
         cursor: pointer;
+        transition:
+          background-color 0.5s ease,
+          transform 0.5s ease;
 
         &:hover {
-          background-color: #0056b3;
+          background-color: red;
         }
       }
     }
   }
+
+  /* fade on enter/leave */
+  .game-enter-from,
+  .game-leave-to {
+    opacity: 0;
+  }
+  .game-enter-to,
+  .game-leave-from {
+    opacity: 1;
+  }
+  .game-enter-active,
+  .game-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  .choosing-section {
+    margin-bottom: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+
+    .choosing-label {
+      font-size: 2em;
+      height: 1em;
+      color: $chosen-colour;
+      font-weight: bold;
+    }
+
+    select {
+      padding: 0.5em;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      font-size: 1.25em;
+      padding: 0.5em 1em;
+      border-radius: 5px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+
+      &:hover:not(:disabled) {
+        background-color: #0056b3;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        background-color: lightgray;
+        cursor: default;
+      }
+    }
+  }
+  @keyframes winner {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.5);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+}
 </style>
