@@ -10,7 +10,7 @@ export default {
         'Trickster: Spades',
         'Pandemic',
         'Spirit Island',
-        'Set',
+        'Set with Friends',
       ],
       gamesInPerson: [
         '7 Wonders Duel',
@@ -64,6 +64,28 @@ export default {
     sortedGamesInPerson() {
       return [...this.gamesInPerson].sort((a, b) => a.localeCompare(b));
     },
+  },
+  watch: {
+    customGames: {
+      handler(newVal) {
+        localStorage.setItem('customGames', JSON.stringify(newVal));
+      },
+      deep: true,
+    },
+    choice(newVal) {
+      localStorage.setItem('lastChoice', newVal);
+    },
+  },
+  mounted() {
+    const savedCustomGames = localStorage.getItem('customGames');
+    if (savedCustomGames) {
+      this.customGames = JSON.parse(savedCustomGames);
+    }
+
+    const savedChoice = localStorage.getItem('lastChoice');
+    if (savedChoice) {
+      this.choice = savedChoice;
+    }
   },
   methods: {
     gameItemClasses(game) {
