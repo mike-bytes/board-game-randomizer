@@ -40,12 +40,8 @@ export default {
 
       // only apply filters to the available games, not the chosen ones
       return this.filterGames(games, {
-        cooperative:
-          this.view === 'Cooperative'
-            ? true
-            : this.view === 'Competitive'
-              ? false
-              : null,
+        cooperative: this.view === 'Cooperative' ? true : null,
+        competitive: this.view === 'Competitive' ? true : null,
         time:
           this.view === 'Short <30min'
             ? 'Short'
@@ -149,6 +145,9 @@ export default {
     filterGames(games, criteria) {
       return games.filter((game) => {
         if (criteria.cooperative && game.cooperative !== criteria.cooperative) {
+          return false;
+        }
+        if (criteria.competitive && game.cooperative === criteria.competitive) {
           return false;
         }
         if (criteria.time) {
