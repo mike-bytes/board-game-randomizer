@@ -176,6 +176,10 @@ export default {
       }
       return classes;
     },
+    changeGameType() {
+      this.chosenGame = null;
+      this.removedGames = [];
+    },
     getRandomGame() {
       const randomIndex = Math.floor(Math.random() * this.games.length);
       return this.games[randomIndex];
@@ -240,13 +244,16 @@ export default {
       <p class="choosing-label">{{ chosenGame }}</p>
       <div class="game-type-wrapper">
         <label class="game-type-label"> Game Type: </label>
-        <select v-model="gameTypeChoice" @change="chosenGame = null">
+        <select v-model="gameTypeChoice" @change="changeGameType">
           <option value="Online">Online</option>
           <option value="In Person">In Person</option>
           <option value="Custom">Custom</option>
         </select>
         <button
-          v-if="games.length > 0"
+          v-if="
+            removedGames.length > 0 ||
+            (gameTypeChoice === 'Custom' && games.length > 0)
+          "
           class="reset-button"
           @click="resetGames"
         >
