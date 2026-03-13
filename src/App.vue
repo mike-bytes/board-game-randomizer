@@ -200,12 +200,12 @@ export default {
       if (this.picking) return;
       this.picking = true;
 
-      const PICKS = 100;
-      const DELAY = 10;
+      const PICKS = 25;
 
       for (let i = 0; i < PICKS; i++) {
         this.chosenGame = this.getRandomGame();
-        await new Promise((resolve) => setTimeout(resolve, DELAY));
+        const delay = 10 + i * 5; // gradually slows down
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
       this.picking = false;
     },
@@ -236,14 +236,14 @@ export default {
     <label class="title">Board Game Randomizer</label>
     <div class="header-section">
       <label class="choosing-label">{{ chosenGame }}</label>
+      <button
+        class="random-button"
+        @click="randomizeGame"
+        :disabled="picking || !games.length"
+      >
+        Random Game
+      </button>
       <div class="game-type-wrapper">
-        <button
-          class="random-button"
-          @click="randomizeGame"
-          :disabled="picking || !games.length"
-        >
-          Random Game
-        </button>
         <label class="game-type-label"> Game Type: </label>
         <select v-model="gameTypeChoice" @change="changeGameType">
           <option value="Online">Online</option>
@@ -267,7 +267,7 @@ export default {
     <TransitionGroup
       name="game"
       tag="div"
-      class="middle-section"
+      :class="['middle-section', { spinning: picking }]"
       :key="gameTypeChoice"
     >
       <div
@@ -283,7 +283,7 @@ export default {
     <div v-if="gameTypeChoice === 'Custom'" class="footer-section">
       <div class="custom-selection-wrapper">
         <div>
-          <p class="custom-selection-label">Choose games to include:</p>
+          <p class="custom-selection-label">Add choices:</p>
         </div>
         <div>
           <label class="filter-label">Filter:</label>
@@ -328,6 +328,7 @@ button {
   min-height: 36px;
   min-width: 36px;
   padding: 6px 12px;
+  touch-action: manipulation;
 }
 .page {
   font-family: 'Arial', sans-serif;
@@ -419,6 +420,14 @@ button {
     flex: 1;
     align-content: start;
     padding: 20px;
+
+    &.spinning {
+      .game-item:not(.chosen) {
+        animation: slot-flicker 0.15s linear infinite;
+        filter: blur(0.5px);
+        opacity: 0.85;
+      }
+    }
 
     .game-item {
       display: grid;
@@ -520,7 +529,6 @@ button {
   }
   .game-enter-active,
   .game-leave-active {
-    // transition: all 0.2s ease;
     transition:
       opacity 0.2s ease,
       transform 0.2s ease;
@@ -530,14 +538,16 @@ button {
     0% {
       transform: scale(1);
     }
-    50% {
-      transform: scale(1.1);
+    40% {
+      transform: scale(1.25);
+    }
+    70% {
+      transform: scale(1.15);
     }
     100% {
       transform: scale(1);
     }
   }
-
   @media (max-width: 600px) {
     .middle-section {
       padding: 10px;
@@ -545,18 +555,33 @@ button {
     }
     .footer-section {
       max-height: 40vh;
-      padding: 12px;
+      padding-left: 12px;
+      padding-right: 12px;
+      padding-top: 12px;
     }
     .custom-selection-wrapper {
       flex-direction: column;
       align-items: center;
     }
-    .game-item {
+    .game-item,
+    .custom-game-item {
       font-size: 0.9em;
     }
     .random-button {
       width: 75%;
       max-width: 280px;
+    }
+  }
+
+  @keyframes slot-flicker {
+    0% {
+      transform: scale(0.99);
+    }
+    50% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.99);
     }
   }
 }
