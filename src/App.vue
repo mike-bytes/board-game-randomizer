@@ -347,15 +347,22 @@ export default {
     },
     async randomizeGame() {
       if (this.picking) return;
+
+      if (this.games.length === 1) {
+        this.chosenGame = this.getRandomGame();
+        return;
+      }
+
       this.picking = true;
 
-      for (let i = 0; i < 70; i++) {
+      for (let i = 0; i < 125; i++) {
         this.chosenGame = this.getRandomGame();
-        const FAST_ITERATIONS = 50;
-        const delay =
-          i > FAST_ITERATIONS
-            ? 1 + (i - FAST_ITERATIONS) * (i - FAST_ITERATIONS)
-            : 5;
+        await new Promise((resolve) => setTimeout(resolve, 5));
+      }
+
+      for (let i = 0; i < 25; i++) {
+        this.chosenGame = this.getRandomGame();
+        const delay = i * i;
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
       this.picking = false;
@@ -448,18 +455,17 @@ export default {
       </div>
 
       <div class="games-custom-picker">
-        <div
+        <button
           class="custom-game-item"
           v-for="game in sortedAvailableGames"
           :key="game"
+          @click="addCustomGame(game)"
         >
-          <button @click="addCustomGame(game)">
-            <label :class="customGameClasses(game)">
-              {{ game }}
-            </label>
-            <!-- {{ customGames.includes(game) ? '−' : '+' }} -->
-          </button>
-        </div>
+          <label :class="customGameClasses(game)">
+            {{ game }}
+          </label>
+          <div class="plus-circle">+</div>
+        </button>
       </div>
     </div>
   </div>
@@ -589,7 +595,7 @@ select {
 
     .game-item {
       position: relative; // for absolute x-button
-      display: flex; // center main text
+      display: flex;
       align-items: center;
       justify-content: center;
       min-height: 58px;
@@ -611,13 +617,12 @@ select {
         animation: winner 0.3s ease;
       }
 
-      /* X button */
       .x-circle {
-        position: absolute; // float over text
+        position: absolute;
         top: 50%;
         right: 5px;
         transform: translateY(-50%) translateX(5px); // start slightly off
-        opacity: 0; // hidden by default
+        opacity: 0;
         width: 28px;
         height: 28px;
         border-radius: 50%;
@@ -669,6 +674,7 @@ select {
         justify-content: center;
         gap: 0.5em;
         text-align: center;
+        min-height: 58px;
       }
     }
 
