@@ -5,15 +5,19 @@ export default {
   name: 'GameRandomizer',
   data() {
     return {
-      chosenGame: null,
-      gameTypeChoice: 'Online',
-      picking: false,
-      customGames: [], // user-selected subset
-      view: 'All',
-      removedGames: [], // games removed from the current selection
-      lastRandomGame: null,
       gamesList: null, // all the games from the json
+
+      gameTypeChoice: 'Online',
+      view: 'All',
+
+      customGames: [], // user-selected subset
+      removedGames: [], // games removed from the current selection
+
       displayedGames: null,
+
+      isPicking: false,
+      chosenGameName: null,
+      lastRandomGame: null,
     };
   },
   computed: {
@@ -84,7 +88,7 @@ export default {
   },
   methods: {
     changeGameType() {
-      this.chosenGame = null;
+      this.chosenGameName = null;
       this.removedGames = [];
     },
     removeGame(gameName) {
@@ -103,12 +107,12 @@ export default {
       if (!this.customGames.includes(gameName)) {
         this.customGames.push(gameName);
       }
-      this.chosenGame = null;
+      this.chosenGameName = null;
     },
     resetGames() {
       this.customGames = [];
       this.removedGames = [];
-      this.chosenGame = null;
+      this.chosenGameName = null;
     },
     getRandomGame() {
       if (!this.games.length) return null;
@@ -123,15 +127,15 @@ export default {
       return game;
     },
     async randomizeGame() {
-      if (this.picking || !this.games.length) return;
-      this.picking = true;
+      if (this.isPicking || !this.games.length) return;
+      this.isPicking = true;
 
       let index = Math.floor(Math.random() * this.displayedGames.length);
       let delay = 30;
       for (let i = 0; i < 75; i++) {
         const game = this.displayedGames[index % this.displayedGames.length];
 
-        this.chosenGame = game.name;
+        this.chosenGameName = game.name;
         this.lastRandomGame = game.name;
 
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -140,7 +144,7 @@ export default {
         index++;
       }
 
-      this.picking = false;
+      this.isPicking = false;
     },
     filterGames(games, criteria) {
       return games.filter((game) => {
@@ -176,14 +180,14 @@ export default {
 </script>
 
 <template>
-  <div :class="['page', { picking: picking }]">
+  <div :class="['page', { isPicking: isPicking }]">
     <label class="title">Board Game Randomizer</label>
     <div class="header-section">
-      <label class="choosing-label">{{ chosenGame }}</label>
+      <label class="choosing-label">{{ chosenGameName }}</label>
       <button
         class="random-button"
         @click="randomizeGame"
-        :disabled="picking || !games.length"
+        :disabled="isPicking || this.games.length === 0"
       >
         Random Game
       </button>
@@ -201,7 +205,7 @@ export default {
           "
           class="reset-button"
           @click="resetGames"
-          :disabled="picking || !games.length"
+          :disabled="isPicking || !games.length"
         >
           Reset
         </button>
@@ -211,13 +215,13 @@ export default {
     <TransitionGroup
       name="game"
       tag="div"
-      :class="['middle-section', { picking: picking }]"
+      :class="['middle-section', { isPicking: isPicking }]"
       :key="gameTypeChoice"
     >
       <button
         v-for="game in displayedGames"
         :key="game.name"
-        :class="{ 'game-item': true, chosen: game.name === chosenGame }"
+        :class="{ 'game-item': true, chosen: game.name === chosenGameName }"
         @click="removeGame(game.name)"
       >
         {{ game.name }}
@@ -284,6 +288,13 @@ button {
   &:hover {
     background-color: white;
   }
+
+  &:disabled {
+    opacity: 0.5;
+    background-color: grey !important;
+    cursor: default;
+    pointer-events: none;
+  }
 }
 select {
   min-width: 160px;
@@ -298,7 +309,7 @@ select {
   flex-direction: column;
   min-height: 100vh;
 
-  &.picking {
+  &.isPicking {
     background-color: rgb(223, 223, 223);
   }
 
@@ -375,7 +386,7 @@ select {
     align-content: start;
     padding: 40px;
 
-    &.picking {
+    &.isPicking {
       .game-item .x-circle {
         visibility: hidden;
       }
