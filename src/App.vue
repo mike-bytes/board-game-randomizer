@@ -348,7 +348,7 @@ button {
     gap: 1em;
 
     .choosing-label {
-      height: 1em;
+      height: 1.5em;
       font-weight: bold;
       font-size: clamp(1.2rem, 4vw, 2rem);
       text-align: center;
