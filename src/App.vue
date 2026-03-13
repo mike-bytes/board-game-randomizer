@@ -235,14 +235,7 @@ export default {
   <div class="page">
     <h1>Board Game Randomizer</h1>
     <div class="header-section">
-      <button
-        class="random-button"
-        :disabled="picking || !games.length"
-        @click="randomizeGame"
-      >
-        Random Game
-      </button>
-      <p class="choosing-label">{{ chosenGame }}</p>
+      <label class="choosing-label">{{ chosenGame }}</label>
       <div class="game-type-wrapper">
         <label class="game-type-label"> Game Type: </label>
         <select v-model="gameTypeChoice" @change="changeGameType">
@@ -251,12 +244,20 @@ export default {
           <option value="Custom">Custom</option>
         </select>
         <button
+          class="random-button"
+          @click="randomizeGame"
+          :disabled="picking || !games.length"
+        >
+          Random Game
+        </button>
+        <button
           v-if="
             removedGames.length > 0 ||
             (gameTypeChoice === 'Custom' && games.length > 0)
           "
           class="reset-button"
           @click="resetGames"
+          :disabled="picking || !games.length"
         >
           Reset
         </button>
@@ -337,6 +338,7 @@ body {
     .choosing-label {
       font-size: 2em;
       height: 1em;
+      padding: 10px;
       color: $chosen-colour;
       font-weight: bold;
     }
@@ -361,14 +363,20 @@ body {
         color: white;
         cursor: pointer;
 
-        &:hover {
-          background-color: #c82333;
+        &:hover:not(:disabled) {
+          background-color: #dc3545;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          background-color: lightgray;
+          cursor: default;
         }
       }
     }
 
     .random-button {
-      font-size: 1.25em;
+      font-size: 1em;
       padding: 0.5em 1em;
       border-radius: 5px;
       border: none;
