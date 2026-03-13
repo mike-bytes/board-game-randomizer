@@ -4,73 +4,198 @@ export default {
   data() {
     return {
       gamesData: {
-        Catan: { online: true, inPerson: true, cooperative: false },
+        Catan: {
+          online: true,
+          inPerson: true,
+          cooperative: false,
+          time: [60, 120],
+        },
         'Ticket to Ride: Europe': {
           online: true,
           inPerson: true,
           cooperative: false,
+          time: [30, 60],
         },
-        'Codenames Duet': { online: true, inPerson: false, cooperative: true },
+        'Codenames Duet': {
+          online: true,
+          inPerson: false,
+          cooperative: true,
+          time: [15, 30],
+        },
         'Trickster: Spades': {
           online: true,
           inPerson: false,
           cooperative: true,
+          time: [20, 30],
         },
-        Pandemic: { online: true, inPerson: false, cooperative: true },
-        'Spirit Island': { online: true, inPerson: true, cooperative: true },
+        Pandemic: {
+          online: true,
+          inPerson: false,
+          cooperative: true,
+          time: [45, 60],
+        },
+        'Spirit Island': {
+          online: true,
+          inPerson: true,
+          cooperative: true,
+          time: [90, 120],
+        },
         'Set with Friends': {
           online: true,
           inPerson: false,
           cooperative: false,
+          time: [20, 30],
         },
-        '7 Wonders Duel': { online: false, inPerson: true, cooperative: false },
-        'Bomb Busters': { online: false, inPerson: true, cooperative: true },
-        Cascadia: { online: false, inPerson: true, cooperative: false },
+        '7 Wonders Duel': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 30],
+        },
+        'Bomb Busters': {
+          online: false,
+          inPerson: true,
+          cooperative: true,
+          time: [30, 30],
+        },
+        Cascadia: {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 45],
+        },
         'Quest for El Dorado': {
           online: false,
           inPerson: true,
           cooperative: false,
+          time: [30, 60],
         },
-        'Sky Team': { online: false, inPerson: true, cooperative: true },
+        'Sky Team': {
+          online: false,
+          inPerson: true,
+          cooperative: true,
+          time: [20, 30],
+        },
         'The Crew: Mission Deep Sea': {
           online: false,
           inPerson: true,
           cooperative: true,
+          time: [20, 30],
         },
-        'Clank!': { online: false, inPerson: true, cooperative: false },
-        Harmonies: { online: false, inPerson: true, cooperative: false },
-        'Ticket to Ride': { online: false, inPerson: true, cooperative: false },
+        'Clank!': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 60],
+        },
+        Harmonies: {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 45],
+        },
+        'Ticket to Ride': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 60],
+        },
         'Critter Kitchen': {
           online: false,
           inPerson: true,
           cooperative: false,
+          time: [60, 60],
         },
-        Flamecraft: { online: false, inPerson: true, cooperative: false },
-        'Res Arcana': { online: false, inPerson: true, cooperative: false },
+        Flamecraft: {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 45],
+        },
+        'Res Arcana': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 60],
+        },
         'Vale of Eternity': {
           online: false,
           inPerson: true,
           cooperative: false,
+          time: [30, 45],
         },
-        Quacks: { online: false, inPerson: true, cooperative: false },
-        Everdell: { online: false, inPerson: true, cooperative: false },
+        Quacks: {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 60],
+        },
+        Everdell: {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [40, 80],
+        },
         'Wingspan / Oceania': {
           online: false,
           inPerson: true,
           cooperative: false,
+          time: [40, 70],
         },
-        Azul: { online: false, inPerson: true, cooperative: false },
-        'Flip 7': { online: false, inPerson: true, cooperative: false },
-        'Summer Camp': { online: false, inPerson: true, cooperative: false },
-        Parks: { online: false, inPerson: true, cooperative: false },
-        Mysterium: { online: false, inPerson: true, cooperative: false },
+        Azul: {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 45],
+        },
+        'Flip 7': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [15, 30],
+        },
+        'Summer Camp': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 45],
+        },
+        Parks: {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [30, 60],
+        },
+        Mysterium: {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [40, 45],
+        },
         'Machi Koro Bright Lights': {
           online: false,
           inPerson: true,
           cooperative: false,
+          time: [30, 45],
         },
-        Takenoko: { online: false, inPerson: true, cooperative: false },
-        Sabobatage: { online: false, inPerson: true, cooperative: false },
+        Takenoko: {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [45, 45],
+        },
+        Sabobatage: {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [10, 30],
+        },
+        'Happy Dim Sum': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+          time: [15, 30],
+        },
       },
       chosenGame: null,
       gameTypeChoice: 'Online',
@@ -100,7 +225,6 @@ export default {
       let games = Object.keys(this.gamesData).filter(
         (game) => !this.removedGames.includes(game)
       );
-
       switch (this.gameTypeChoice) {
         case 'Online':
           games = games.filter((game) => this.gamesData[game].online);
@@ -116,14 +240,6 @@ export default {
         default:
           break;
       }
-
-      if (this.view === 'Cooperative') {
-        games = games.filter((game) => this.gamesData[game].cooperative);
-      }
-
-      if (this.view === 'Competitive') {
-        games = games.filter((game) => !this.gamesData[game].cooperative);
-      }
       return games;
     },
     sortedGames() {
@@ -137,10 +253,43 @@ export default {
         .filter((game) => !this.customGames.includes(game))
         .sort((a, b) => a.localeCompare(b));
 
-      if (this.view === 'Cooperative') {
-        games = games.filter((game) => this.gamesData[game].cooperative);
-      } else if (this.view === 'Competitive') {
-        games = games.filter((game) => !this.gamesData[game].cooperative);
+      // only apply filters to the available games, not the chosen ones
+      switch (this.view) {
+        case 'Cooperative': {
+          games = games.filter((game) => this.gamesData[game].cooperative);
+          break;
+        }
+        case 'Competitive': {
+          games = games.filter((game) => !this.gamesData[game].cooperative);
+          break;
+        }
+        case 'Short <30min': {
+          games = games.filter((game) => {
+            const averageTime =
+              (this.gamesData[game].time[0] + this.gamesData[game].time[1]) / 2;
+            return averageTime <= 30;
+          });
+          break;
+        }
+        case 'Medium 30-45min': {
+          games = games.filter((game) => {
+            const averageTime =
+              (this.gamesData[game].time[0] + this.gamesData[game].time[1]) / 2;
+            return averageTime > 30 && averageTime <= 45;
+          });
+          break;
+        }
+        case 'Long >45min': {
+          games = games.filter((game) => {
+            const averageTime =
+              (this.gamesData[game].time[0] + this.gamesData[game].time[1]) / 2;
+            return averageTime > 45;
+          });
+          break;
+        }
+        default: {
+          break;
+        }
       }
 
       return games;
@@ -200,11 +349,13 @@ export default {
       if (this.picking) return;
       this.picking = true;
 
-      const PICKS = 25;
-
-      for (let i = 0; i < PICKS; i++) {
+      for (let i = 0; i < 70; i++) {
         this.chosenGame = this.getRandomGame();
-        const delay = 10 + i * 5; // gradually slows down
+        const FAST_ITERATIONS = 50;
+        const delay =
+          i > FAST_ITERATIONS
+            ? 1 + (i - FAST_ITERATIONS) * (i - FAST_ITERATIONS)
+            : 5;
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
       this.picking = false;
@@ -267,30 +418,31 @@ export default {
     <TransitionGroup
       name="game"
       tag="div"
-      :class="['middle-section', { spinning: picking }]"
+      :class="['middle-section', { picking: picking }]"
       :key="gameTypeChoice"
     >
-      <div
+      <button
         v-for="game in sortedGames"
         :key="game"
         :class="gameItemClasses(game)"
+        @click="removeGame(game)"
       >
         {{ game }}
-        <button @click="removeGame(game)">x</button>
-      </div>
+        <div class="x-circle">x</div>
+      </button>
     </TransitionGroup>
 
     <div v-if="gameTypeChoice === 'Custom'" class="footer-section">
       <div class="custom-selection-wrapper">
-        <div>
-          <p class="custom-selection-label">Add choices:</p>
-        </div>
         <div>
           <label class="filter-label">Filter:</label>
           <select v-model="view">
             <option value="All">All</option>
             <option value="Cooperative">Cooperative</option>
             <option value="Competitive">Competitive</option>
+            <option value="Short <30min">Short &lt;30min</option>
+            <option value="Medium 30-45min">Medium 30-45min</option>
+            <option value="Long >45min">Long &gt;45min</option>
           </select>
         </div>
       </div>
@@ -301,11 +453,11 @@ export default {
           v-for="game in sortedAvailableGames"
           :key="game"
         >
-          <label :class="customGameClasses(game)">
-            {{ game }}
-          </label>
           <button @click="addCustomGame(game)">
-            {{ customGames.includes(game) ? '−' : '+' }}
+            <label :class="customGameClasses(game)">
+              {{ game }}
+            </label>
+            <!-- {{ customGames.includes(game) ? '−' : '+' }} -->
           </button>
         </div>
       </div>
@@ -328,6 +480,14 @@ button {
   min-height: 36px;
   min-width: 36px;
   padding: 6px 12px;
+  touch-action: manipulation;
+  font-size: 1.1em;
+}
+select {
+  min-width: 160px;
+  max-width: 100%;
+  font-size: 1.05em;
+  cursor: pointer;
   touch-action: manipulation;
 }
 .page {
@@ -421,27 +581,29 @@ button {
     align-content: start;
     padding: 40px;
 
-    &.spinning {
-      .game-item:not(.chosen) {
-        animation: slot-flicker 0.15s linear infinite;
-        filter: blur(0.5px);
-        opacity: 0.85;
-      }
-      .game-item button {
+    &.picking {
+      .game-item .x-circle {
         visibility: hidden;
       }
     }
 
     .game-item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      position: relative;
+      position: relative; // for absolute x-button
+      display: flex; // center main text
       align-items: center;
       justify-content: center;
-      gap: 0.5em;
-      padding: 4px 10px;
-      min-height: 22px;
-      text-align: center;
+      min-height: 58px;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      transition:
+        background-color 0.3s ease,
+        transform 0.3s ease;
+
+      &:hover {
+        background-color: #f5f5f5;
+      }
 
       &.chosen {
         color: $chosen-colour;
@@ -449,21 +611,38 @@ button {
         animation: winner 0.3s ease;
       }
 
-      button {
+      /* X button */
+      .x-circle {
+        position: absolute; // float over text
+        top: 50%;
+        right: 5px;
+        transform: translateY(-50%) translateX(5px); // start slightly off
+        opacity: 0; // hidden by default
         width: 28px;
         height: 28px;
         border-radius: 50%;
         border: none;
         background-color: rgb(228, 228, 228);
         color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9em;
         cursor: pointer;
         transition:
-          background-color 0.5s ease,
-          transform 0.5s ease;
+          opacity 0.3s ease,
+          transform 0.3s ease,
+          background-color 0.3s ease;
 
         &:hover {
-          background-color: red;
+          background-color: #dc3545;
         }
+      }
+
+      &:hover .x-circle {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0); // slide into view
+        background-color: #dc3545;
       }
     }
   }
@@ -473,9 +652,10 @@ button {
     bottom: 0;
     background-color: #d3d3d3;
     padding: 20px;
-    max-height: 33vh;
+    min-height: 33vh;
     overflow-y: auto;
     padding-bottom: 3em;
+    border-top: 1px solid darkgrey;
 
     .games-custom-picker {
       display: grid;
@@ -506,11 +686,6 @@ button {
         gap: 0.5em;
       }
       .filter-label {
-        font-weight: bold;
-      }
-      .custom-selection-label {
-        display: flex;
-        justify-content: center;
         font-weight: bold;
       }
       select {
@@ -571,25 +746,9 @@ button {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       }
     }
-    .game-item,
-    .custom-game-item {
-      font-size: 0.9em;
-    }
     .random-button {
       width: 75%;
       max-width: 280px;
-    }
-  }
-
-  @keyframes slot-flicker {
-    0% {
-      transform: scale(0.99);
-    }
-    50% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(0.99);
     }
   }
 }
