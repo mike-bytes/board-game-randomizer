@@ -1,0 +1,194 @@
+{
+  "Catan": {
+    "online": true,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [60, 120]
+  },
+  "Ticket to Ride: Europe": {
+    "online": true,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 60]
+  },
+  "Codenames Duet": {
+    "online": true,
+    "inPerson": false,
+    "cooperative": true,
+    "time": [15, 30]
+  },
+  "Trickster: Spades": {
+    "online": true,
+    "inPerson": false,
+    "cooperative": true,
+    "time": [20, 30]
+  },
+  "Pandemic": {
+    "online": true,
+    "inPerson": false,
+    "cooperative": true,
+    "time": [45, 60]
+  },
+  "Spirit Island": {
+    "online": true,
+    "inPerson": true,
+    "cooperative": true,
+    "time": [90, 120]
+  },
+  "Set with Friends": {
+    "online": true,
+    "inPerson": false,
+    "cooperative": false,
+    "time": [20, 30]
+  },
+  "7 Wonders Duel": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 30]
+  },
+  "Bomb Busters": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": true,
+    "time": [30, 30]
+  },
+  "Cascadia": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 45]
+  },
+  "Quest for El Dorado": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 60]
+  },
+  "Sky Team": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": true,
+    "time": [20, 30]
+  },
+  "The Crew: Mission Deep Sea": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": true,
+    "time": [20, 30]
+  },
+  "Clank!": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 60]
+  },
+  "Harmonies": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 45]
+  },
+  "Ticket to Ride": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 60]
+  },
+  "Critter Kitchen": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [60, 60]
+  },
+  "Flamecraft": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 45]
+  },
+  "Res Arcana": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 60]
+  },
+  "Vale of Eternity": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 45]
+  },
+  "Quacks": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 60]
+  },
+  "Everdell": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [40, 80]
+  },
+  "Wingspan / Oceania": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [40, 70]
+  },
+  "Azul": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 45]
+  },
+  "Flip 7": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [15, 30]
+  },
+  "Summer Camp": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 45]
+  },
+  "Parks": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 60]
+  },
+  "Mysterium": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [40, 45]
+  },
+  "Machi Koro Bright Lights": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 45]
+  },
+  "Takenoko": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [45, 45]
+  },
+  "Sabobatage": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [10, 30]
+  },
+  "Happy Dim Sum": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [15, 30]
+  }
+}

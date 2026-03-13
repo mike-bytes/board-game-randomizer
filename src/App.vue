@@ -1,298 +1,60 @@
 <script>
+import GAMES_DATA from '../data/games.json';
+
 export default {
   name: 'GameRandomizer',
   data() {
     return {
-      gamesData: {
-        Catan: {
-          online: true,
-          inPerson: true,
-          cooperative: false,
-          time: [60, 120],
-        },
-        'Ticket to Ride: Europe': {
-          online: true,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 60],
-        },
-        'Codenames Duet': {
-          online: true,
-          inPerson: false,
-          cooperative: true,
-          time: [15, 30],
-        },
-        'Trickster: Spades': {
-          online: true,
-          inPerson: false,
-          cooperative: true,
-          time: [20, 30],
-        },
-        Pandemic: {
-          online: true,
-          inPerson: false,
-          cooperative: true,
-          time: [45, 60],
-        },
-        'Spirit Island': {
-          online: true,
-          inPerson: true,
-          cooperative: true,
-          time: [90, 120],
-        },
-        'Set with Friends': {
-          online: true,
-          inPerson: false,
-          cooperative: false,
-          time: [20, 30],
-        },
-        '7 Wonders Duel': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 30],
-        },
-        'Bomb Busters': {
-          online: false,
-          inPerson: true,
-          cooperative: true,
-          time: [30, 30],
-        },
-        Cascadia: {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 45],
-        },
-        'Quest for El Dorado': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 60],
-        },
-        'Sky Team': {
-          online: false,
-          inPerson: true,
-          cooperative: true,
-          time: [20, 30],
-        },
-        'The Crew: Mission Deep Sea': {
-          online: false,
-          inPerson: true,
-          cooperative: true,
-          time: [20, 30],
-        },
-        'Clank!': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 60],
-        },
-        Harmonies: {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 45],
-        },
-        'Ticket to Ride': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 60],
-        },
-        'Critter Kitchen': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [60, 60],
-        },
-        Flamecraft: {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 45],
-        },
-        'Res Arcana': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 60],
-        },
-        'Vale of Eternity': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 45],
-        },
-        Quacks: {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 60],
-        },
-        Everdell: {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [40, 80],
-        },
-        'Wingspan / Oceania': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [40, 70],
-        },
-        Azul: {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 45],
-        },
-        'Flip 7': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [15, 30],
-        },
-        'Summer Camp': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 45],
-        },
-        Parks: {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 60],
-        },
-        Mysterium: {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [40, 45],
-        },
-        'Machi Koro Bright Lights': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [30, 45],
-        },
-        Takenoko: {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [45, 45],
-        },
-        Sabobatage: {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [10, 30],
-        },
-        'Happy Dim Sum': {
-          online: false,
-          inPerson: true,
-          cooperative: false,
-          time: [15, 30],
-        },
-      },
       chosenGame: null,
       gameTypeChoice: 'Online',
       picking: false,
       customGames: [], // user-selected subset
       view: 'All',
       removedGames: [], // games removed from the current selection
+      lastRandomGame: null,
+      gamesList: null, // all the games from the json
+      displayedGames: null,
     };
   },
   computed: {
-    gamesOnline() {
-      return Object.keys(this.gamesData).filter(
-        (game) => this.gamesData[game].online
-      );
-    },
-    gamesInPerson() {
-      return Object.keys(this.gamesData).filter(
-        (game) => this.gamesData[game].inPerson
-      );
-    },
-    gamesCooperative() {
-      return Object.keys(this.gamesData).filter(
-        (game) => this.gamesData[game].cooperative
-      );
-    },
     games() {
-      let games = Object.keys(this.gamesData).filter(
-        (game) => !this.removedGames.includes(game)
-      );
-      switch (this.gameTypeChoice) {
-        case 'Online':
-          games = games.filter((game) => this.gamesData[game].online);
-          break;
-        case 'In Person':
-          games = games.filter((game) => this.gamesData[game].inPerson);
-          break;
-        case 'Custom':
-          games = this.customGames.filter(
-            (game) => !this.removedGames.includes(game)
-          );
-          break;
-        default:
-          break;
+      let games = this.gamesList || [];
+      if (this.gameTypeChoice === 'Online') {
+        games = games.filter((g) => g.online);
       }
-      return games;
+      if (this.gameTypeChoice === 'In Person') {
+        games = games.filter((g) => g.inPerson);
+      }
+      if (this.gameTypeChoice === 'Custom') {
+        games = games.filter((g) => this.customGames.includes(g.name));
+      }
+      return games.filter((g) => !this.removedGames.includes(g.name));
     },
     sortedGames() {
-      return [...this.games].sort((a, b) => a.localeCompare(b));
-    },
-    sortedGamesInPerson() {
-      return [...this.gamesInPerson].sort((a, b) => a.localeCompare(b));
+      return [...this.games].sort((a, b) => a.name.localeCompare(b.name));
     },
     sortedAvailableGames() {
-      let games = Object.keys(this.gamesData)
-        .filter((game) => !this.customGames.includes(game))
-        .sort((a, b) => a.localeCompare(b));
+      let games = this.gamesList
+        .filter((game) => !this.customGames.includes(game.name))
+        .sort((a, b) => a.name.localeCompare(b.name));
 
       // only apply filters to the available games, not the chosen ones
-      switch (this.view) {
-        case 'Cooperative': {
-          games = games.filter((game) => this.gamesData[game].cooperative);
-          break;
-        }
-        case 'Competitive': {
-          games = games.filter((game) => !this.gamesData[game].cooperative);
-          break;
-        }
-        case 'Short <30min': {
-          games = games.filter((game) => {
-            const averageTime =
-              (this.gamesData[game].time[0] + this.gamesData[game].time[1]) / 2;
-            return averageTime <= 30;
-          });
-          break;
-        }
-        case 'Medium 30-45min': {
-          games = games.filter((game) => {
-            const averageTime =
-              (this.gamesData[game].time[0] + this.gamesData[game].time[1]) / 2;
-            return averageTime > 30 && averageTime <= 45;
-          });
-          break;
-        }
-        case 'Long >45min': {
-          games = games.filter((game) => {
-            const averageTime =
-              (this.gamesData[game].time[0] + this.gamesData[game].time[1]) / 2;
-            return averageTime > 45;
-          });
-          break;
-        }
-        default: {
-          break;
-        }
-      }
-
-      return games;
+      return this.filterGames(games, {
+        cooperative:
+          this.view === 'Cooperative'
+            ? true
+            : this.view === 'Competitive'
+              ? false
+              : null,
+        time:
+          this.view === 'Short <30min'
+            ? 'Short'
+            : this.view === 'Medium 30-45min'
+              ? 'Medium'
+              : this.view === 'Long >45min'
+                ? 'Long'
+                : null,
+      });
     },
   },
   watch: {
@@ -305,78 +67,45 @@ export default {
     gameTypeChoice(newVal) {
       localStorage.setItem('lastChoice', newVal);
     },
+    games: {
+      immediate: true,
+      handler(newVal) {
+        this.displayedGames = this.shuffle(newVal);
+      },
+    },
+  },
+  created() {
+    this.gamesList = Object.entries(GAMES_DATA).map(([name, data]) => ({
+      name,
+      ...data,
+    }));
   },
   mounted() {
     const savedCustomGames = localStorage.getItem('customGames');
-    if (savedCustomGames) {
-      this.customGames = JSON.parse(savedCustomGames);
-    }
-
+    if (savedCustomGames) this.customGames = JSON.parse(savedCustomGames);
     const savedChoice = localStorage.getItem('lastChoice');
-    if (savedChoice) {
-      this.gameTypeChoice = savedChoice;
-    }
+    if (savedChoice) this.gameTypeChoice = savedChoice;
   },
   methods: {
-    gameItemClasses(game) {
-      const classes = ['game-item'];
-      if (game === this.chosenGame) {
-        classes.push('chosen');
-      }
-      return classes;
-    },
     changeGameType() {
       this.chosenGame = null;
       this.removedGames = [];
     },
-    getRandomGame() {
-      const randomIndex = Math.floor(Math.random() * this.games.length);
-      return this.games[randomIndex];
-    },
-    removeGame(game) {
+    removeGame(gameName) {
       if (this.gameTypeChoice === 'Custom') {
-        const index = this.customGames.indexOf(game);
+        const index = this.customGames.indexOf(gameName);
         if (index !== -1) {
           this.customGames.splice(index, 1);
         }
       } else {
-        if (!this.removedGames.includes(game)) {
-          this.removedGames.push(game);
+        if (!this.removedGames.includes(gameName)) {
+          this.removedGames.push(gameName);
         }
       }
     },
-    async randomizeGame() {
-      if (this.picking) return;
-
-      if (this.games.length === 1) {
-        this.chosenGame = this.getRandomGame();
-        return;
-      }
-
-      this.picking = true;
-
-      for (let i = 0; i < 125; i++) {
-        this.chosenGame = this.getRandomGame();
-        await new Promise((resolve) => setTimeout(resolve, 5));
-      }
-
-      for (let i = 0; i < 25; i++) {
-        this.chosenGame = this.getRandomGame();
-        const delay = i * i;
-        await new Promise((resolve) => setTimeout(resolve, delay));
-      }
-      this.picking = false;
-    },
-    customGameClasses(game) {
-      const classes = [];
-      if (this.customGames.includes(game)) {
-        classes.push('chosen');
-      }
-      return classes;
-    },
-    addCustomGame(game) {
-      if (!this.customGames.includes(game)) {
-        this.customGames.push(game);
+    addCustomGame(gameName) {
+      if (!this.customGames.includes(gameName)) {
+        this.customGames.push(gameName);
       }
       this.chosenGame = null;
     },
@@ -384,6 +113,64 @@ export default {
       this.customGames = [];
       this.removedGames = [];
       this.chosenGame = null;
+    },
+    getRandomGame() {
+      if (!this.games.length) return null;
+
+      let game;
+      do {
+        const randomIndex = Math.floor(Math.random() * this.games.length);
+        game = this.games[randomIndex].name;
+      } while (game === this.lastRandomGame && this.games.length > 1);
+      this.lastRandomGame = game;
+
+      return game;
+    },
+    async randomizeGame() {
+      if (this.picking || !this.games.length) return;
+      this.picking = true;
+
+      let index = Math.floor(Math.random() * this.displayedGames.length);
+      let delay = 30;
+      for (let i = 0; i < 75; i++) {
+        const game = this.displayedGames[index % this.displayedGames.length];
+
+        this.chosenGame = game.name;
+        this.lastRandomGame = game.name;
+
+        await new Promise((resolve) => setTimeout(resolve, delay));
+
+        if (i > 50) delay += i / 5; // gradually slow down near end
+        index++;
+      }
+
+      this.picking = false;
+    },
+    filterGames(games, criteria) {
+      return games.filter((game) => {
+        if (criteria.cooperative && game.cooperative !== criteria.cooperative) {
+          return false;
+        }
+        if (criteria.time) {
+          const avg = this.getAverageTime(game);
+          if (criteria.time === 'Short' && avg > 30) return false;
+          if (criteria.time === 'Medium' && (avg <= 30 || avg > 45))
+            return false;
+          if (criteria.time === 'Long' && avg <= 45) return false;
+        }
+        return true;
+      });
+    },
+    getAverageTime(game) {
+      return (game.time[0] + game.time[1]) / 2;
+    },
+    shuffle(array) {
+      const a = [...array];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
     },
   },
 };
@@ -429,12 +216,12 @@ export default {
       :key="gameTypeChoice"
     >
       <button
-        v-for="game in sortedGames"
-        :key="game"
-        :class="gameItemClasses(game)"
-        @click="removeGame(game)"
+        v-for="game in displayedGames"
+        :key="game.name"
+        :class="{ 'game-item': true, chosen: game.name === chosenGame }"
+        @click="removeGame(game.name)"
       >
-        {{ game }}
+        {{ game.name }}
         <div class="x-circle">x</div>
       </button>
     </TransitionGroup>
@@ -454,15 +241,20 @@ export default {
         </div>
       </div>
 
-      <TransitionGroup class="games-custom-picker" tag="div" name="custom-game">
+      <TransitionGroup
+        class="games-custom-picker"
+        tag="div"
+        name="custom-game"
+        :key="view"
+      >
         <button
           class="custom-game-item"
           v-for="game in sortedAvailableGames"
-          :key="game"
-          @click="addCustomGame(game)"
+          :key="game.name"
+          @click="addCustomGame(game.name)"
         >
-          <label :class="customGameClasses(game)">
-            {{ game }}
+          <label :class="{ chosen: customGames.includes(game.name) }">
+            {{ game.name }}
           </label>
           <div class="plus-circle">+</div>
         </button>
@@ -488,6 +280,11 @@ button {
   padding: 6px 12px;
   touch-action: manipulation;
   font-size: 1.1em;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: white;
+  }
 }
 select {
   min-width: 160px;
@@ -552,12 +349,6 @@ select {
         &:hover:not(:disabled) {
           background-color: #dc3545;
         }
-
-        &:disabled {
-          opacity: 0.5;
-          background-color: lightgray;
-          cursor: default;
-        }
       }
     }
 
@@ -572,12 +363,6 @@ select {
 
       &:hover:not(:disabled) {
         background-color: #0056b3;
-      }
-
-      &:disabled {
-        opacity: 0.5;
-        background-color: lightgray;
-        cursor: default;
       }
     }
   }
@@ -610,10 +395,6 @@ select {
       transition:
         background-color 0.3s ease,
         transform 0.3s ease;
-
-      &:hover {
-        background-color: #f5f5f5;
-      }
 
       &.chosen {
         color: $chosen-colour;
@@ -727,8 +508,16 @@ select {
   .custom-game-enter-active,
   .custom-game-leave-active {
     transition:
-      opacity 0.2s ease,
-      transform 0.2s ease;
+      opacity 2s ease,
+      transform 2s ease;
+  }
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 3s ease;
+  }
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.3s ease;
   }
 
   @keyframes winner {
