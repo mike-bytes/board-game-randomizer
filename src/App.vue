@@ -414,18 +414,21 @@ button {
 
   .middle-section {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 0.5em;
     margin-bottom: 5em;
     flex: 1;
     align-content: start;
-    padding: 20px;
+    padding: 40px;
 
     &.spinning {
       .game-item:not(.chosen) {
         animation: slot-flicker 0.15s linear infinite;
         filter: blur(0.5px);
         opacity: 0.85;
+      }
+      .game-item button {
+        visibility: hidden;
       }
     }
 
@@ -476,7 +479,7 @@ button {
 
     .games-custom-picker {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 0.5em;
 
       .custom-game-item {
@@ -539,10 +542,10 @@ button {
       transform: scale(1);
     }
     40% {
-      transform: scale(1.25);
+      transform: scale(1.1);
     }
     70% {
-      transform: scale(1.15);
+      transform: scale(1.05);
     }
     100% {
       transform: scale(1);
@@ -552,16 +555,21 @@ button {
     .middle-section {
       padding: 10px;
       gap: 0.4em;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
     .footer-section {
       max-height: 40vh;
       padding-left: 12px;
       padding-right: 12px;
       padding-top: 12px;
-    }
-    .custom-selection-wrapper {
-      flex-direction: column;
-      align-items: center;
+
+      .custom-selection-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+      .games-custom-picker {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
     }
     .game-item,
     .custom-game-item {
