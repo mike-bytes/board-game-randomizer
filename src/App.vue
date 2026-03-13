@@ -233,16 +233,10 @@ export default {
 
 <template>
   <div class="page">
-    <h1>Board Game Randomizer</h1>
+    <label class="title">Board Game Randomizer</label>
     <div class="header-section">
       <label class="choosing-label">{{ chosenGame }}</label>
       <div class="game-type-wrapper">
-        <label class="game-type-label"> Game Type: </label>
-        <select v-model="gameTypeChoice" @change="changeGameType">
-          <option value="Online">Online</option>
-          <option value="In Person">In Person</option>
-          <option value="Custom">Custom</option>
-        </select>
         <button
           class="random-button"
           @click="randomizeGame"
@@ -250,6 +244,12 @@ export default {
         >
           Random Game
         </button>
+        <label class="game-type-label"> Game Type: </label>
+        <select v-model="gameTypeChoice" @change="changeGameType">
+          <option value="Online">Online</option>
+          <option value="In Person">In Person</option>
+          <option value="Custom">Custom</option>
+        </select>
         <button
           v-if="
             removedGames.length > 0 ||
@@ -297,7 +297,7 @@ export default {
 
       <div class="games-custom-picker">
         <div
-          class="custom-games"
+          class="custom-game-item"
           v-for="game in sortedAvailableGames"
           :key="game"
         >
@@ -315,7 +315,11 @@ export default {
 
 <style lang="scss">
 $chosen-colour: #007bff;
-
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   padding: 0;
@@ -331,10 +335,12 @@ button {
   flex-direction: column;
   min-height: 100vh;
 
-  h1 {
+  .title {
+    font-size: clamp(1.5rem, 5vw, 3rem);
     text-align: center;
+    font-weight: bold;
+    margin: 20px 0;
   }
-
   .header-section {
     display: flex;
     flex-direction: column;
@@ -343,11 +349,10 @@ button {
 
     .choosing-label {
       height: 1em;
-      padding: 10px;
-      color: $chosen-colour;
       font-weight: bold;
       font-size: clamp(1.2rem, 4vw, 2rem);
       text-align: center;
+      color: $chosen-colour;
     }
     .game-type-wrapper {
       display: flex;
@@ -416,18 +421,19 @@ button {
     padding: 20px;
 
     .game-item {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto;
       position: relative;
       align-items: center;
       justify-content: center;
       gap: 0.5em;
       padding: 4px 10px;
       min-height: 22px;
+      text-align: center;
 
       &.chosen {
         color: $chosen-colour;
         font-weight: bold;
-        font-size: 1.2em;
         animation: winner 0.3s ease;
       }
 
@@ -456,7 +462,7 @@ button {
     background-color: #d3d3d3;
     padding: 20px;
     max-height: 33vh;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding-bottom: 3em;
 
     .games-custom-picker {
@@ -464,11 +470,13 @@ button {
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 0.5em;
 
-      .custom-games {
-        display: flex;
+      .custom-game-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
         align-items: center;
         justify-content: center;
         gap: 0.5em;
+        text-align: center;
       }
     }
 
@@ -493,6 +501,11 @@ button {
         justify-content: center;
         font-weight: bold;
       }
+      select {
+        padding: 0.5em;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
     }
   }
 
@@ -507,7 +520,10 @@ button {
   }
   .game-enter-active,
   .game-leave-active {
-    transition: all 0.2s ease;
+    // transition: all 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
 
   @keyframes winner {
@@ -537,6 +553,10 @@ button {
     }
     .game-item {
       font-size: 0.9em;
+    }
+    .random-button {
+      width: 75%;
+      max-width: 280px;
     }
   }
 }
