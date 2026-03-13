@@ -225,6 +225,7 @@ export default {
     resetGames() {
       this.customGames = [];
       this.removedGames = [];
+      this.chosenGame = null;
     },
   },
 };
