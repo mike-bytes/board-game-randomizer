@@ -390,7 +390,7 @@ export default {
 </script>
 
 <template>
-  <div class="page">
+  <div :class="['page', { picking: picking }]">
     <label class="title">Board Game Randomizer</label>
     <div class="header-section">
       <label class="choosing-label">{{ chosenGame }}</label>
@@ -454,7 +454,7 @@ export default {
         </div>
       </div>
 
-      <div class="games-custom-picker">
+      <TransitionGroup class="games-custom-picker" tag="div" name="custom-game">
         <button
           class="custom-game-item"
           v-for="game in sortedAvailableGames"
@@ -466,7 +466,7 @@ export default {
           </label>
           <div class="plus-circle">+</div>
         </button>
-      </div>
+      </TransitionGroup>
     </div>
   </div>
 </template>
@@ -501,6 +501,10 @@ select {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+
+  &.picking {
+    background-color: rgb(223, 223, 223);
+  }
 
   .title {
     font-size: clamp(1.5rem, 5vw, 3rem);
@@ -675,6 +679,9 @@ select {
         gap: 0.5em;
         text-align: center;
         min-height: 58px;
+        transition:
+          background-color 0.3s ease,
+          transform 0.3s ease;
       }
     }
 
@@ -704,15 +711,21 @@ select {
 
   /* fade on enter/leave */
   .game-enter-from,
-  .game-leave-to {
+  .game-leave-to,
+  .custom-game-enter-from,
+  .custom-game-leave-to {
     opacity: 0;
   }
   .game-enter-to,
-  .game-leave-from {
+  .game-leave-from,
+  .custom-game-enter-to,
+  .custom-game-leave-from {
     opacity: 1;
   }
   .game-enter-active,
-  .game-leave-active {
+  .game-leave-active,
+  .custom-game-enter-active,
+  .custom-game-leave-active {
     transition:
       opacity 0.2s ease,
       transform 0.2s ease;
