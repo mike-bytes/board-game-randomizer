@@ -234,7 +234,7 @@ export default {
 <template>
   <div class="page">
     <h1>Board Game Randomizer</h1>
-    <div class="choosing-section">
+    <div class="header-section">
       <button
         class="random-button"
         :disabled="picking || !games.length"
@@ -263,7 +263,23 @@ export default {
       </div>
     </div>
 
-    <div v-if="gameTypeChoice === 'Custom'" class="custom-selection">
+    <TransitionGroup
+      name="game"
+      tag="div"
+      class="middle-section"
+      :key="gameTypeChoice"
+    >
+      <div
+        v-for="game in sortedGames"
+        :key="game"
+        :class="gameItemClasses(game)"
+      >
+        {{ game }}
+        <button @click="removeGame(game)">x</button>
+      </div>
+    </TransitionGroup>
+
+    <div v-if="gameTypeChoice === 'Custom'" class="footer-section">
       <div class="custom-selection-wrapper">
         <div>
           <p class="custom-selection-label">Choose games to include:</p>
@@ -293,149 +309,26 @@ export default {
         </div>
       </div>
     </div>
-
-    <TransitionGroup
-      name="game"
-      tag="div"
-      class="games-list"
-      :key="gameTypeChoice"
-    >
-      <div
-        v-for="game in sortedGames"
-        :key="game"
-        :class="gameItemClasses(game)"
-      >
-        {{ game }}
-        <button @click="removeGame(game)">x</button>
-      </div>
-    </TransitionGroup>
   </div>
 </template>
 
 <style lang="scss">
 $chosen-colour: #007bff;
-
+body {
+  margin: 0;
+  padding: 0;
+}
 .page {
   font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 
   h1 {
     text-align: center;
   }
-  .custom-selection {
-    background-color: #d3d3d3;
-    padding: 20px;
-    margin-bottom: 2em;
 
-    .custom-selection-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      flex-direction: row;
-      gap: 0.5em;
-      margin-bottom: 1em;
-
-      div {
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
-      }
-      .filter-label {
-        font-weight: bold;
-      }
-      .custom-selection-label {
-        display: flex;
-        justify-content: center;
-        font-weight: bold;
-      }
-    }
-
-    .games-custom-picker {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.5em;
-
-      .custom-games {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5em;
-      }
-    }
-
-    .available-games {
-      gap: 0.5em;
-      width: 100%;
-
-      .game-items-container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .game-item {
-        gap: 0.5em;
-        display: flex;
-        align-items: center;
-      }
-    }
-  }
-
-  .games-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5em;
-    margin-bottom: 5em;
-
-    .game-item {
-      display: flex;
-      position: relative;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
-      padding: 5px;
-      height: 30px;
-
-      &.chosen {
-        color: $chosen-colour;
-        font-weight: bold;
-        font-size: 1.2em;
-        animation: winner 0.3s ease;
-      }
-
-      button {
-        border-radius: 50%;
-        border: none;
-        background-color: rgb(228, 228, 228);
-        color: white;
-        cursor: pointer;
-        transition:
-          background-color 0.5s ease,
-          transform 0.5s ease;
-
-        &:hover {
-          background-color: red;
-        }
-      }
-    }
-  }
-
-  /* fade on enter/leave */
-  .game-enter-from,
-  .game-leave-to {
-    opacity: 0;
-  }
-  .game-enter-to,
-  .game-leave-from {
-    opacity: 1;
-  }
-  .game-enter-active,
-  .game-leave-active {
-    transition: all 0.2s ease;
-  }
-
-  .choosing-section {
-    margin-bottom: 2em;
+  .header-section {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -495,12 +388,114 @@ $chosen-colour: #007bff;
     }
   }
 
+  .middle-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5em;
+    margin-bottom: 5em;
+    flex: 1;
+    align-content: start;
+    padding: 20px;
+
+    .game-item {
+      display: flex;
+      position: relative;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+      padding: 4px 10px;
+      min-height: 22px;
+
+      &.chosen {
+        color: $chosen-colour;
+        font-weight: bold;
+        font-size: 1.2em;
+        animation: winner 0.3s ease;
+      }
+
+      button {
+        border-radius: 50%;
+        border: none;
+        background-color: rgb(228, 228, 228);
+        color: white;
+        cursor: pointer;
+        transition:
+          background-color 0.5s ease,
+          transform 0.5s ease;
+
+        &:hover {
+          background-color: red;
+        }
+      }
+    }
+  }
+
+  .footer-section {
+    position: sticky;
+    bottom: 0;
+    background-color: #d3d3d3;
+    padding: 20px;
+    max-height: 33vh;
+    overflow-y: scroll;
+    padding-bottom: 3em;
+
+    .games-custom-picker {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5em;
+
+      .custom-games {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5em;
+      }
+    }
+
+    .custom-selection-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-direction: row;
+      gap: 0.5em;
+      margin-bottom: 1em;
+
+      div {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+      }
+      .filter-label {
+        font-weight: bold;
+      }
+      .custom-selection-label {
+        display: flex;
+        justify-content: center;
+        font-weight: bold;
+      }
+    }
+  }
+
+  /* fade on enter/leave */
+  .game-enter-from,
+  .game-leave-to {
+    opacity: 0;
+  }
+  .game-enter-to,
+  .game-leave-from {
+    opacity: 1;
+  }
+  .game-enter-active,
+  .game-leave-active {
+    transition: all 0.2s ease;
+  }
+
   @keyframes winner {
     0% {
       transform: scale(1);
     }
     50% {
-      transform: scale(1.5);
+      transform: scale(1.1);
     }
     100% {
       transform: scale(1);
