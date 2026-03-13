@@ -315,9 +315,15 @@ export default {
 
 <style lang="scss">
 $chosen-colour: #007bff;
+
 body {
   margin: 0;
   padding: 0;
+}
+button {
+  min-height: 36px;
+  min-width: 36px;
+  padding: 6px 12px;
 }
 .page {
   font-family: 'Arial', sans-serif;
@@ -336,16 +342,20 @@ body {
     gap: 1em;
 
     .choosing-label {
-      font-size: 2em;
       height: 1em;
       padding: 10px;
       color: $chosen-colour;
       font-weight: bold;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      text-align: center;
     }
     .game-type-wrapper {
       display: flex;
       align-items: center;
       gap: 0.5em;
+      flex-wrap: wrap;
+      justify-content: center;
+
       .game-type-label {
         font-weight: bold;
       }
@@ -398,7 +408,7 @@ body {
 
   .middle-section {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 0.5em;
     margin-bottom: 5em;
     flex: 1;
@@ -422,6 +432,8 @@ body {
       }
 
       button {
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         border: none;
         background-color: rgb(228, 228, 228);
@@ -449,7 +461,7 @@ body {
 
     .games-custom-picker {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 0.5em;
 
       .custom-games {
@@ -507,6 +519,24 @@ body {
     }
     100% {
       transform: scale(1);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .middle-section {
+      padding: 10px;
+      gap: 0.4em;
+    }
+    .footer-section {
+      max-height: 40vh;
+      padding: 12px;
+    }
+    .custom-selection-wrapper {
+      flex-direction: column;
+      align-items: center;
+    }
+    .game-item {
+      font-size: 0.9em;
     }
   }
 }
