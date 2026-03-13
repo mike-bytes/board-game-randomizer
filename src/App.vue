@@ -3,66 +3,147 @@ export default {
   name: 'GameRandomizer',
   data() {
     return {
-      gamesOnline: [
-        'Catan',
-        'Ticket to Ride: Europe',
-        'Codenames Duet',
-        'Trickster: Spades',
-        'Pandemic',
-        'Spirit Island',
-        'Set with Friends',
-      ],
-      gamesInPerson: [
-        '7 Wonders Duel',
-        'Spirit Island',
-        'Bomb Busters',
-        'Cascadia',
-        'Quest for El Dorado',
-        'Sky Team',
-        'The Crew: Mission Deep Sea',
-        'Clank!',
-        'Harmonies',
-        'Ticket to Ride',
-        'Critter Kitchen',
-        'Flamecraft',
-        'Res Arcana',
-        'Vale of Eternity',
-        'Quacks',
-        'Everdell',
-        'Wingspan / Oceania',
-        'Azul',
-        'Flip 7',
-        'Summer Camp',
-        'Parks',
-        'Mysterium',
-        'Catan',
-        'Machi Koro Bright Lights',
-        'Takenoko',
-        'Sabobatage',
-      ],
+      gamesData: {
+        Catan: { online: true, inPerson: true, cooperative: false },
+        'Ticket to Ride: Europe': {
+          online: true,
+          inPerson: true,
+          cooperative: false,
+        },
+        'Codenames Duet': { online: true, inPerson: false, cooperative: true },
+        'Trickster: Spades': {
+          online: true,
+          inPerson: false,
+          cooperative: true,
+        },
+        Pandemic: { online: true, inPerson: false, cooperative: true },
+        'Spirit Island': { online: true, inPerson: true, cooperative: true },
+        'Set with Friends': {
+          online: true,
+          inPerson: false,
+          cooperative: false,
+        },
+        '7 Wonders Duel': { online: false, inPerson: true, cooperative: false },
+        'Bomb Busters': { online: false, inPerson: true, cooperative: true },
+        Cascadia: { online: false, inPerson: true, cooperative: false },
+        'Quest for El Dorado': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+        },
+        'Sky Team': { online: false, inPerson: true, cooperative: true },
+        'The Crew: Mission Deep Sea': {
+          online: false,
+          inPerson: true,
+          cooperative: true,
+        },
+        'Clank!': { online: false, inPerson: true, cooperative: false },
+        Harmonies: { online: false, inPerson: true, cooperative: false },
+        'Ticket to Ride': { online: false, inPerson: true, cooperative: false },
+        'Critter Kitchen': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+        },
+        Flamecraft: { online: false, inPerson: true, cooperative: false },
+        'Res Arcana': { online: false, inPerson: true, cooperative: false },
+        'Vale of Eternity': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+        },
+        Quacks: { online: false, inPerson: true, cooperative: false },
+        Everdell: { online: false, inPerson: true, cooperative: false },
+        'Wingspan / Oceania': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+        },
+        Azul: { online: false, inPerson: true, cooperative: false },
+        'Flip 7': { online: false, inPerson: true, cooperative: false },
+        'Summer Camp': { online: false, inPerson: true, cooperative: false },
+        Parks: { online: false, inPerson: true, cooperative: false },
+        Mysterium: { online: false, inPerson: true, cooperative: false },
+        'Machi Koro Bright Lights': {
+          online: false,
+          inPerson: true,
+          cooperative: false,
+        },
+        Takenoko: { online: false, inPerson: true, cooperative: false },
+        Sabobatage: { online: false, inPerson: true, cooperative: false },
+      },
       chosenGame: null,
-      choice: 'Online',
+      gameTypeChoice: 'Online',
       picking: false,
       customGames: [], // user-selected subset
+      view: 'All',
+      removedGames: [], // games removed from the current selection
     };
   },
   computed: {
+    gamesOnline() {
+      return Object.keys(this.gamesData).filter(
+        (game) => this.gamesData[game].online
+      );
+    },
+    gamesInPerson() {
+      return Object.keys(this.gamesData).filter(
+        (game) => this.gamesData[game].inPerson
+      );
+    },
+    gamesCooperative() {
+      return Object.keys(this.gamesData).filter(
+        (game) => this.gamesData[game].cooperative
+      );
+    },
     games() {
-      switch (this.choice) {
+      let games = Object.keys(this.gamesData).filter(
+        (game) => !this.removedGames.includes(game)
+      );
+
+      switch (this.gameTypeChoice) {
         case 'Online':
-          return this.gamesOnline;
+          games = games.filter((game) => this.gamesData[game].online);
+          break;
         case 'In Person':
-          return this.gamesInPerson;
+          games = games.filter((game) => this.gamesData[game].inPerson);
+          break;
         case 'Custom':
-          return this.customGames;
+          games = this.customGames.filter(
+            (game) => !this.removedGames.includes(game)
+          );
+          break;
+        default:
+          break;
       }
-      return [];
+
+      if (this.view === 'Cooperative') {
+        games = games.filter((game) => this.gamesData[game].cooperative);
+      }
+
+      if (this.view === 'Competitive') {
+        games = games.filter((game) => !this.gamesData[game].cooperative);
+      }
+      return games;
     },
     sortedGames() {
       return [...this.games].sort((a, b) => a.localeCompare(b));
     },
     sortedGamesInPerson() {
       return [...this.gamesInPerson].sort((a, b) => a.localeCompare(b));
+    },
+    sortedAvailableGames() {
+      let games = Object.keys(this.gamesData)
+        .filter((game) => !this.customGames.includes(game))
+        .sort((a, b) => a.localeCompare(b));
+
+      if (this.view === 'Cooperative') {
+        games = games.filter((game) => this.gamesData[game].cooperative);
+      } else if (this.view === 'Competitive') {
+        games = games.filter((game) => !this.gamesData[game].cooperative);
+      }
+
+      return games;
     },
   },
   watch: {
@@ -72,7 +153,7 @@ export default {
       },
       deep: true,
     },
-    choice(newVal) {
+    gameTypeChoice(newVal) {
       localStorage.setItem('lastChoice', newVal);
     },
   },
@@ -84,7 +165,7 @@ export default {
 
     const savedChoice = localStorage.getItem('lastChoice');
     if (savedChoice) {
-      this.choice = savedChoice;
+      this.gameTypeChoice = savedChoice;
     }
   },
   methods: {
@@ -100,8 +181,15 @@ export default {
       return this.games[randomIndex];
     },
     removeGame(game) {
-      if (this.games.includes(game)) {
-        this.games.splice(this.games.indexOf(game), 1);
+      if (this.gameTypeChoice === 'Custom') {
+        const index = this.customGames.indexOf(game);
+        if (index !== -1) {
+          this.customGames.splice(index, 1);
+        }
+      } else {
+        if (!this.removedGames.includes(game)) {
+          this.removedGames.push(game);
+        }
       }
     },
     async randomizeGame() {
@@ -117,20 +205,22 @@ export default {
       }
       this.picking = false;
     },
-    toggleCustomGame(game) {
-      const index = this.customGames.indexOf(game);
-      if (index === -1) {
-        this.customGames.push(game);
-      } else {
-        this.customGames.splice(index, 1);
-      }
-    },
     customGameClasses(game) {
       const classes = [];
       if (this.customGames.includes(game)) {
         classes.push('chosen');
       }
       return classes;
+    },
+    addCustomGame(game) {
+      if (!this.customGames.includes(game)) {
+        this.customGames.push(game);
+      }
+      this.chosenGame = null;
+    },
+    resetGames() {
+      this.customGames = [];
+      this.removedGames = [];
     },
   },
 };
@@ -140,43 +230,75 @@ export default {
   <div class="page">
     <h1>Board Game Randomizer</h1>
     <div class="choosing-section">
-      <button :disabled="picking || !games.length" @click="randomizeGame">
+      <button
+        class="random-button"
+        :disabled="picking || !games.length"
+        @click="randomizeGame"
+      >
         Random Game
       </button>
       <p class="choosing-label">{{ chosenGame }}</p>
-      <select v-model="choice" @change="chosenGame = null">
-        <option value="Online">Online</option>
-        <option value="In Person">In Person</option>
-        <option value="Custom">Custom</option>
-      </select>
+      <div class="game-type-wrapper">
+        <label class="game-type-label"> Game Type: </label>
+        <select v-model="gameTypeChoice" @change="chosenGame = null">
+          <option value="Online">Online</option>
+          <option value="In Person">In Person</option>
+          <option value="Custom">Custom</option>
+        </select>
+        <button
+          v-if="games.length > 0"
+          class="reset-button"
+          @click="resetGames"
+        >
+          Reset
+        </button>
+      </div>
     </div>
 
-    <div v-if="choice === 'Custom'" class="custom-selection">
-      <p class="custom-selection-label">Choose games to include:</p>
+    <div v-if="gameTypeChoice === 'Custom'" class="custom-selection">
+      <div class="custom-selection-wrapper">
+        <div>
+          <p class="custom-selection-label">Choose games to include:</p>
+        </div>
+        <div>
+          <label class="filter-label">Filter:</label>
+          <select v-model="view">
+            <option value="All">All</option>
+            <option value="Cooperative">Cooperative</option>
+            <option value="Competitive">Competitive</option>
+          </select>
+        </div>
+      </div>
+
       <div class="games-custom-picker">
         <div
           class="custom-games"
-          v-for="game in sortedGamesInPerson"
+          v-for="game in sortedAvailableGames"
           :key="game"
         >
           <label :class="customGameClasses(game)">
             {{ game }}
           </label>
-          <button @click="toggleCustomGame(game)">
+          <button @click="addCustomGame(game)">
             {{ customGames.includes(game) ? '−' : '+' }}
           </button>
         </div>
       </div>
     </div>
 
-    <TransitionGroup name="game" tag="div" class="games-list" :key="choice">
+    <TransitionGroup
+      name="game"
+      tag="div"
+      class="games-list"
+      :key="gameTypeChoice"
+    >
       <div
         v-for="game in sortedGames"
         :key="game"
         :class="gameItemClasses(game)"
       >
-        <button @click="removeGame(game)">x</button>
         {{ game }}
+        <button @click="removeGame(game)">x</button>
       </div>
     </TransitionGroup>
   </div>
@@ -186,22 +308,39 @@ export default {
 $chosen-colour: #007bff;
 
 .page {
+  font-family: 'Arial', sans-serif;
+
   h1 {
     text-align: center;
   }
-
-  font-family: 'Arial', sans-serif;
-
   .custom-selection {
-    background-color: lightgray;
+    background-color: #d3d3d3;
     padding: 20px;
     margin-bottom: 2em;
 
-    .custom-selection-label {
-      margin-bottom: 1.5em;
+    .custom-selection-wrapper {
       display: flex;
-      justify-content: center;
+      align-items: center;
+      justify-content: space-around;
+      flex-direction: row;
+      gap: 0.5em;
+      margin-bottom: 1em;
+
+      div {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+      }
+      .filter-label {
+        font-weight: bold;
+      }
+      .custom-selection-label {
+        display: flex;
+        justify-content: center;
+        font-weight: bold;
+      }
     }
+
     .games-custom-picker {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -213,10 +352,23 @@ $chosen-colour: #007bff;
         justify-content: center;
         gap: 0.5em;
       }
-      .chosen {
-        color: $chosen-colour;
-        // font-weight: bold;
-        font-size: 1.1em;
+    }
+
+    .available-games {
+      gap: 0.5em;
+      width: 100%;
+
+      .game-items-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .game-item {
+        gap: 0.5em;
+        display: flex;
+        align-items: center;
       }
     }
   }
@@ -287,14 +439,34 @@ $chosen-colour: #007bff;
       color: $chosen-colour;
       font-weight: bold;
     }
+    .game-type-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      .game-type-label {
+        font-weight: bold;
+      }
+      select {
+        padding: 0.5em;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      .reset-button {
+        font-size: 0.9em;
+        padding: 0.25em 0.5em;
+        border-radius: 5px;
+        border: none;
+        background-color: #dc3545;
+        color: white;
+        cursor: pointer;
 
-    select {
-      padding: 0.5em;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+        &:hover {
+          background-color: #c82333;
+        }
+      }
     }
 
-    button {
+    .random-button {
       font-size: 1.25em;
       padding: 0.5em 1em;
       border-radius: 5px;
@@ -314,6 +486,7 @@ $chosen-colour: #007bff;
       }
     }
   }
+
   @keyframes winner {
     0% {
       transform: scale(1);
