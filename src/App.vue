@@ -1,12 +1,14 @@
 <script>
 import GAMES_DATA from '../data/games.json';
-import Button from '@/components/Button.vue';
 import { GAME_TYPE, GAME_VIEW } from '@/helpers/constants';
+import Button from '@/components/Button.vue';
+import GameGrid from '@/components/GameGrid.vue';
 
 export default {
   name: 'GameRandomizer',
   components: {
     Button,
+    GameGrid,
   },
   data() {
     return {
@@ -228,22 +230,13 @@ export default {
       </div>
     </div>
 
-    <TransitionGroup
-      name="game"
-      tag="div"
-      :class="['middle-section', { isPicking: isPicking }]"
-      :key="gameTypeChoice"
-    >
-      <Button
-        v-for="game in displayedGames"
-        :key="game.name"
-        :class="{ 'game-item': true, chosen: game.name === chosenGameName }"
-        @click="removeGame(game.name)"
-      >
-        {{ game.name }}
-        <div class="x-circle">x</div>
-      </Button>
-    </TransitionGroup>
+    <GameGrid
+      :gameTypeChoice="gameTypeChoice"
+      :displayedGames="displayedGames"
+      :chosenGameName="chosenGameName"
+      :isPicking="isPicking"
+      @game-clicked="removeGame"
+    />
 
     <div
       v-if="gameTypeChoice === GAME_TYPE.CUSTOM"
@@ -299,8 +292,7 @@ export default {
 </template>
 
 <style lang="scss">
-$blue: #007bff;
-$darkred: #dc3545;
+@import '@/styles/variables.scss';
 
 *,
 *::before,
@@ -383,76 +375,6 @@ label {
     }
   }
 
-  .middle-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.5em;
-    margin-bottom: 5em;
-    flex: 1;
-    align-content: start;
-    padding: 40px;
-
-    &.isPicking {
-      .game-item .x-circle {
-        visibility: hidden;
-      }
-    }
-
-    .game-item {
-      position: relative; // for absolute x-button
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 58px;
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      cursor: pointer;
-      transition:
-        background-color 0.5s ease,
-        transform 0.5s ease;
-
-      &.chosen {
-        font-weight: bold;
-        animation: winner 0.2s ease;
-        color: $blue;
-      }
-
-      .x-circle {
-        position: absolute;
-        top: 50%;
-        right: 5px;
-        transform: translateY(-50%) translateX(5px); // start slightly off
-        opacity: 0;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        border: none;
-        background-color: rgb(228, 228, 228);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.9em;
-        cursor: pointer;
-        transition:
-          opacity 0.3s ease,
-          transform 0.3s ease,
-          background-color 0.3s ease;
-
-        &:hover {
-          background-color: $darkred;
-        }
-      }
-
-      &:hover .x-circle {
-        opacity: 1;
-        transform: translateY(-50%) translateX(0); // slide into view
-        background-color: $darkred;
-      }
-    }
-  }
-
   .footer-section {
     position: sticky;
     bottom: 0;
@@ -529,8 +451,8 @@ label {
   .custom-game-enter-active,
   .custom-game-leave-active {
     transition:
-      opacity 2s ease,
-      transform 2s ease;
+      opacity 0.3s ease,
+      transform 0.3s ease;
   }
 
   @keyframes winner {
