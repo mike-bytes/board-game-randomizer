@@ -318,6 +318,9 @@ select {
   cursor: pointer;
   touch-action: manipulation;
 }
+label {
+  font-weight: bold;
+}
 .page {
   font-family: 'Arial', sans-serif;
   display: flex;
@@ -342,7 +345,6 @@ select {
 
     .choosing-label {
       height: 1.5em;
-      font-weight: bold;
       font-size: clamp(1.2rem, 4vw, 2rem);
       text-align: center;
       color: $blue;
@@ -354,9 +356,6 @@ select {
       flex-wrap: wrap;
       justify-content: center;
 
-      .game-type-label {
-        font-weight: bold;
-      }
       select {
         padding: 0.5em;
         border-radius: 5px;
@@ -410,13 +409,13 @@ select {
       border-radius: 5px;
       cursor: pointer;
       transition:
-        background-color 0.3s ease,
-        transform 0.3s ease;
+        background-color 0.5s ease,
+        transform 0.5s ease;
 
       &.chosen {
-        color: $blue;
         font-weight: bold;
-        animation: winner 0.3s ease;
+        animation: winner 0.2s ease;
+        color: $blue;
       }
 
       .x-circle {
@@ -503,9 +502,6 @@ select {
         display: flex;
         align-items: center;
         gap: 0.5em;
-      }
-      .filter-label {
-        font-weight: bold;
       }
       select {
         padding: 0.5em;
