@@ -42,6 +42,7 @@ export default {
       default: false,
     },
   },
+  emits: ['game-clicked'],
   methods: {
     handleClick(gameName) {
       this.$emit('game-clicked', gameName);
@@ -51,7 +52,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/styles/variables.scss';
+@use '@/styles/variables.scss' as *;
+@use '@/styles/globals.scss' as *;
 
 .game-grid {
   display: grid;
@@ -119,6 +121,14 @@ export default {
       opacity: 1;
       transform: translateY(-50%) translateX(0); // slide into view
       background-color: $darkred;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .middle-section {
+      padding: 10px;
+      gap: 0.4em;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
   }
 }

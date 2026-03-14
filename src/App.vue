@@ -3,12 +3,16 @@ import GAMES_DATA from '../data/games.json';
 import { GAME_TYPE, GAME_VIEW } from '@/helpers/constants';
 import Button from '@/components/Button.vue';
 import GameGrid from '@/components/GameGrid.vue';
+import GameTypeSelector from '@/components/GameTypeSelector.vue';
+import CustomGamePicker from './components/CustomGamePicker.vue';
 
 export default {
   name: 'GameRandomizer',
   components: {
     Button,
     GameGrid,
+    GameTypeSelector,
+    CustomGamePicker,
   },
   data() {
     return {
@@ -28,8 +32,6 @@ export default {
       isPicking: false,
       chosenGameName: null,
       lastRandomGame: null,
-
-      isFooterHidden: false,
     };
   },
   computed: {
@@ -205,29 +207,14 @@ export default {
       >
         Random Game
       </Button>
-      <div class="game-type-wrapper">
-        <label class="game-type-label"> Game Type: </label>
-        <select v-model="gameTypeChoice" @change="changeGameType">
-          <option
-            :key="gameType"
-            :value="gameType"
-            v-for="gameType in Object.values(GAME_TYPE)"
-          >
-            {{ gameType }}
-          </option>
-        </select>
-        <Button
-          v-if="
-            removedGames.length > 0 ||
-            (gameTypeChoice === GAME_TYPE.CUSTOM && selectedGames.length > 0)
-          "
-          class="reset-button"
-          @click="resetGames"
-          :disabled="isPicking || !selectedGames.length"
-        >
-          Reset
-        </Button>
-      </div>
+      <GameTypeSelector
+        v-model="gameTypeChoice"
+        :selectedGames="selectedGames"
+        :removedGames="removedGames"
+        :isPicking="isPicking"
+        @change-game-type="changeGameType"
+        @reset-games="resetGames"
+      />
     </div>
 
     <GameGrid
@@ -238,81 +225,22 @@ export default {
       @game-clicked="removeGame"
     />
 
-    <div
+    <CustomGamePicker
       v-if="gameTypeChoice === GAME_TYPE.CUSTOM"
-      :class="['footer-section', { hidden: isFooterHidden }]"
-    >
-      <div class="custom-selection-wrapper">
-        <Button @click="isFooterHidden = !isFooterHidden">{{
-          isFooterHidden ? 'Show Footer' : 'Hide Footer'
-        }}</Button>
-        <div v-if="!isFooterHidden">
-          <div>
-            <label class="filter-label">Filter:</label>
-            <select v-model="view">
-              <option
-                v-for="filter in Object.values(GAME_VIEW)"
-                :key="filter"
-                :value="filter"
-              >
-                {{ filter }}
-              </option>
-            </select>
-          </div>
-          <Button
-            @click="addSelectedGames"
-            :disabled="availableGames.length === 0"
-            >Add Set</Button
-          >
-        </div>
-      </div>
-
-      <TransitionGroup
-        v-if="!isFooterHidden"
-        class="games-custom-picker"
-        tag="div"
-        name="custom-game"
-        :key="view"
-      >
-        <Button
-          v-for="game in availableGames"
-          :key="game.name"
-          @click="addCustomGame(game.name)"
-          :class="[
-            'custom-game-item',
-            { chosen: customGames.includes(game.name) },
-          ]"
-        >
-          {{ game.name }}
-          <div class="plus-circle">+</div>
-        </Button>
-      </TransitionGroup>
-    </div>
+      v-model="view"
+      :availableGames="availableGames"
+      :customGames="customGames"
+      :isPicking="isPicking"
+      @add-custom-game="addCustomGame"
+      @add-selected-games="addSelectedGames"
+    />
   </div>
 </template>
 
 <style lang="scss">
-@import '@/styles/variables.scss';
+@use '@/styles/variables.scss' as *;
+@use '@/styles/globals.scss' as *;
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-body {
-  margin: 0;
-  padding: 0;
-}
-select {
-  min-width: 160px;
-  max-width: 100%;
-  font-size: 1.05em;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-label {
-  font-weight: bold;
-}
 .page {
   font-family: 'Arial', sans-serif;
   display: flex;
@@ -341,28 +269,6 @@ label {
       text-align: center;
       color: $blue;
     }
-    .game-type-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      flex-wrap: wrap;
-      justify-content: center;
-
-      select {
-        padding: 0.5em;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-      }
-      .reset-button {
-        padding: 0.25em 0.5em;
-        background-color: $darkred;
-        color: white;
-
-        &:hover:not(:disabled) {
-          background-color: $darkred;
-        }
-      }
-    }
 
     .random-button {
       background-color: $blue;
@@ -371,64 +277,6 @@ label {
 
       &:hover:not(:disabled) {
         background-color: $blue;
-      }
-    }
-  }
-
-  .footer-section {
-    position: sticky;
-    bottom: 0;
-    background-color: #d3d3d3;
-    padding: 15px;
-    min-height: 33vh;
-    overflow-y: auto;
-    padding-bottom: 3em;
-    border-top: 1px solid darkgrey;
-
-    &.hidden {
-      max-height: 50px;
-      overflow-y: hidden;
-      min-height: unset;
-    }
-
-    .games-custom-picker {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 0.5em;
-
-      .custom-game-item {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5em;
-        text-align: center;
-        font-weight: normal;
-        min-height: 58px;
-        color: rgb(65, 65, 65);
-        transition:
-          background-color 0.3s ease,
-          transform 0.3s ease;
-      }
-    }
-
-    .custom-selection-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-direction: row;
-      gap: 0.5em;
-      margin-bottom: 1em;
-
-      div {
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
-      }
-      select {
-        padding: 0.5em;
-        border-radius: 5px;
-        border: 1px solid #ccc;
       }
     }
   }
@@ -470,25 +318,6 @@ label {
     }
   }
   @media (max-width: 600px) {
-    .middle-section {
-      padding: 10px;
-      gap: 0.4em;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-    .footer-section {
-      max-height: 40vh;
-      padding-left: 12px;
-      padding-right: 12px;
-      padding-top: 12px;
-
-      .custom-selection-wrapper {
-        flex-direction: column;
-        align-items: center;
-      }
-      .games-custom-picker {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      }
-    }
     .random-button {
       width: 75%;
       max-width: 280px;
