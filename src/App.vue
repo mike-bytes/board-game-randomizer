@@ -1,6 +1,7 @@
 <script>
 import GAMES_DATA from '../data/games.json';
 import Button from '@/components/Button.vue';
+import { GAME_TYPE, GAME_VIEW } from '@/helpers/constants';
 
 export default {
   name: 'GameRandomizer',
@@ -9,10 +10,13 @@ export default {
   },
   data() {
     return {
+      GAME_TYPE, // for template access
+      GAME_VIEW, // for template access
+
       gamesList: null, // all the games from the json
 
-      gameTypeChoice: 'Online',
-      view: 'All',
+      gameTypeChoice: GAME_TYPE.ONLINE,
+      view: GAME_VIEW.ALL,
 
       customGames: [], // user-selected subset
       removedGames: [], // games removed from the current selection
@@ -29,13 +33,13 @@ export default {
   computed: {
     games() {
       let games = this.gamesList || [];
-      if (this.gameTypeChoice === 'Online') {
+      if (this.gameTypeChoice === GAME_TYPE.ONLINE) {
         games = games.filter((g) => g.online);
       }
-      if (this.gameTypeChoice === 'In Person') {
+      if (this.gameTypeChoice === GAME_TYPE.IN_PERSON) {
         games = games.filter((g) => g.inPerson);
       }
-      if (this.gameTypeChoice === 'Custom') {
+      if (this.gameTypeChoice === GAME_TYPE.CUSTOM) {
         games = games.filter((g) => this.customGames.includes(g.name));
       }
       return games.filter((g) => !this.removedGames.includes(g.name));
@@ -47,14 +51,14 @@ export default {
 
       // only apply filters to the available games, not the chosen ones
       return this.filterGames(games, {
-        cooperative: this.view === 'Cooperative' ? true : null,
-        competitive: this.view === 'Competitive' ? true : null,
+        cooperative: this.view === GAME_VIEW.COOPERATIVE ? true : null,
+        competitive: this.view === GAME_VIEW.COMPETITIVE ? true : null,
         time:
-          this.view === 'Short <30min'
+          this.view === GAME_VIEW.SHORT
             ? 'Short'
-            : this.view === 'Medium 30-45min'
+            : this.view === GAME_VIEW.MEDIUM
               ? 'Medium'
-              : this.view === 'Long >45min'
+              : this.view === GAME_VIEW.LONG
                 ? 'Long'
                 : null,
       });
@@ -95,7 +99,7 @@ export default {
       this.removedGames = [];
     },
     removeGame(gameName) {
-      if (this.gameTypeChoice === 'Custom') {
+      if (this.gameTypeChoice === GAME_TYPE.CUSTOM) {
         const index = this.customGames.indexOf(gameName);
         if (index !== -1) {
           this.customGames.splice(index, 1);
@@ -159,10 +163,10 @@ export default {
         }
         if (criteria.time) {
           const avg = this.getAverageTime(game);
-          if (criteria.time === 'Short' && avg > 30) return false;
-          if (criteria.time === 'Medium' && (avg <= 30 || avg > 45))
+          if (criteria.time === GAME_VIEW.SHORT && avg > 30) return false;
+          if (criteria.time === GAME_VIEW.MEDIUM && (avg <= 30 || avg > 45))
             return false;
-          if (criteria.time === 'Long' && avg <= 45) return false;
+          if (criteria.time === GAME_VIEW.LONG && avg <= 45) return false;
         }
         return true;
       });
@@ -202,14 +206,18 @@ export default {
       <div class="game-type-wrapper">
         <label class="game-type-label"> Game Type: </label>
         <select v-model="gameTypeChoice" @change="changeGameType">
-          <option value="Online">Online</option>
-          <option value="In Person">In Person</option>
-          <option value="Custom">Custom</option>
+          <option
+            :key="gameType"
+            :value="gameType"
+            v-for="gameType in Object.values(GAME_TYPE)"
+          >
+            {{ gameType }}
+          </option>
         </select>
         <Button
           v-if="
             removedGames.length > 0 ||
-            (gameTypeChoice === 'Custom' && games.length > 0)
+            (gameTypeChoice === GAME_TYPE.CUSTOM && games.length > 0)
           "
           class="reset-button"
           @click="resetGames"
@@ -238,23 +246,24 @@ export default {
     </TransitionGroup>
 
     <div
-      v-if="gameTypeChoice === 'Custom'"
+      v-if="gameTypeChoice === GAME_TYPE.CUSTOM"
       :class="['footer-section', { hidden: isFooterHidden }]"
     >
       <div class="custom-selection-wrapper">
-        <Button @click="this.isFooterHidden = !this.isFooterHidden">{{
+        <Button @click="isFooterHidden = !isFooterHidden">{{
           isFooterHidden ? 'Show Footer' : 'Hide Footer'
         }}</Button>
         <div v-if="!isFooterHidden">
           <div>
             <label class="filter-label">Filter:</label>
             <select v-model="view">
-              <option value="All">All</option>
-              <option value="Cooperative">Cooperative</option>
-              <option value="Competitive">Competitive</option>
-              <option value="Short <30min">Short &lt;30min</option>
-              <option value="Medium 30-45min">Medium 30-45min</option>
-              <option value="Long >45min">Long &gt;45min</option>
+              <option
+                v-for="filter in Object.values(GAME_VIEW)"
+                :key="filter"
+                :value="filter"
+              >
+                {{ filter }}
+              </option>
             </select>
           </div>
           <Button
