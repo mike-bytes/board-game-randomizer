@@ -1,8 +1,12 @@
 <script>
 import GAMES_DATA from '../data/games.json';
+import Button from '@/components/Button.vue';
 
 export default {
   name: 'GameRandomizer',
+  components: {
+    Button,
+  },
   data() {
     return {
       gamesList: null, // all the games from the json
@@ -18,6 +22,8 @@ export default {
       isPicking: false,
       chosenGameName: null,
       lastRandomGame: null,
+
+      isFooterHidden: false,
     };
   },
   computed: {
@@ -34,10 +40,7 @@ export default {
       }
       return games.filter((g) => !this.removedGames.includes(g.name));
     },
-    sortedGames() {
-      return [...this.games].sort((a, b) => a.name.localeCompare(b.name));
-    },
-    sortedAvailableGames() {
+    availableGames() {
       let games = this.gamesList
         .filter((game) => !this.customGames.includes(game.name))
         .sort((a, b) => a.name.localeCompare(b.name));
@@ -65,7 +68,7 @@ export default {
       deep: true,
     },
     gameTypeChoice(newVal) {
-      localStorage.setItem('lastChoice', newVal);
+      localStorage.setItem('lastGameTypeChoice', newVal);
     },
     games: {
       immediate: true,
@@ -83,7 +86,7 @@ export default {
   mounted() {
     const savedCustomGames = localStorage.getItem('customGames');
     if (savedCustomGames) this.customGames = JSON.parse(savedCustomGames);
-    const savedChoice = localStorage.getItem('lastChoice');
+    const savedChoice = localStorage.getItem('lastGameTypeChoice');
     if (savedChoice) this.gameTypeChoice = savedChoice;
   },
   methods: {
@@ -175,6 +178,11 @@ export default {
       }
       return a;
     },
+    addSelectedGames() {
+      const gamesToAdd = this.availableGames.map((g) => g.name);
+      this.customGames.push(...gamesToAdd);
+      this.chosenGameName = null;
+    },
   },
 };
 </script>
@@ -184,13 +192,13 @@ export default {
     <label class="title">Board Game Randomizer</label>
     <div class="header-section">
       <label class="choosing-label">{{ chosenGameName }}</label>
-      <button
+      <Button
         class="random-button"
         @click="randomizeGame"
         :disabled="isPicking || this.games.length === 0"
       >
         Random Game
-      </button>
+      </Button>
       <div class="game-type-wrapper">
         <label class="game-type-label"> Game Type: </label>
         <select v-model="gameTypeChoice" @change="changeGameType">
@@ -198,7 +206,7 @@ export default {
           <option value="In Person">In Person</option>
           <option value="Custom">Custom</option>
         </select>
-        <button
+        <Button
           v-if="
             removedGames.length > 0 ||
             (gameTypeChoice === 'Custom' && games.length > 0)
@@ -208,7 +216,7 @@ export default {
           :disabled="isPicking || !games.length"
         >
           Reset
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -218,7 +226,7 @@ export default {
       :class="['middle-section', { isPicking: isPicking }]"
       :key="gameTypeChoice"
     >
-      <button
+      <Button
         v-for="game in displayedGames"
         :key="game.name"
         :class="{ 'game-item': true, chosen: game.name === chosenGameName }"
@@ -226,48 +234,65 @@ export default {
       >
         {{ game.name }}
         <div class="x-circle">x</div>
-      </button>
+      </Button>
     </TransitionGroup>
 
-    <div v-if="gameTypeChoice === 'Custom'" class="footer-section">
+    <div
+      v-if="gameTypeChoice === 'Custom'"
+      :class="['footer-section', { hidden: isFooterHidden }]"
+    >
       <div class="custom-selection-wrapper">
-        <div>
-          <label class="filter-label">Filter:</label>
-          <select v-model="view">
-            <option value="All">All</option>
-            <option value="Cooperative">Cooperative</option>
-            <option value="Competitive">Competitive</option>
-            <option value="Short <30min">Short &lt;30min</option>
-            <option value="Medium 30-45min">Medium 30-45min</option>
-            <option value="Long >45min">Long &gt;45min</option>
-          </select>
+        <Button @click="this.isFooterHidden = !this.isFooterHidden">{{
+          isFooterHidden ? 'Show Footer' : 'Hide Footer'
+        }}</Button>
+        <div v-if="!isFooterHidden">
+          <div>
+            <label class="filter-label">Filter:</label>
+            <select v-model="view">
+              <option value="All">All</option>
+              <option value="Cooperative">Cooperative</option>
+              <option value="Competitive">Competitive</option>
+              <option value="Short <30min">Short &lt;30min</option>
+              <option value="Medium 30-45min">Medium 30-45min</option>
+              <option value="Long >45min">Long &gt;45min</option>
+            </select>
+          </div>
+          <Button
+            @click="addSelectedGames"
+            :disabled="availableGames.length === 0"
+            >Add Set</Button
+          >
         </div>
       </div>
 
       <TransitionGroup
+        v-if="!isFooterHidden"
         class="games-custom-picker"
         tag="div"
         name="custom-game"
         :key="view"
       >
-        <button
-          class="custom-game-item"
-          v-for="game in sortedAvailableGames"
+        <Button
+          v-for="game in availableGames"
           :key="game.name"
           @click="addCustomGame(game.name)"
+          :class="[
+            'custom-game-item',
+            { chosen: customGames.includes(game.name) },
+          ]"
         >
-          <label :class="{ chosen: customGames.includes(game.name) }">
-            {{ game.name }}
-          </label>
+          {{ game.name }}
           <div class="plus-circle">+</div>
-        </button>
+        </Button>
       </TransitionGroup>
     </div>
   </div>
 </template>
 
 <style lang="scss">
-$chosen-colour: #007bff;
+$blue: #007bff;
+$darkred: #dc3545;
+
 *,
 *::before,
 *::after {
@@ -276,25 +301,6 @@ $chosen-colour: #007bff;
 body {
   margin: 0;
   padding: 0;
-}
-button {
-  min-height: 36px;
-  min-width: 36px;
-  padding: 6px 12px;
-  touch-action: manipulation;
-  font-size: 1.1em;
-  border-radius: 5px;
-
-  &:hover {
-    background-color: white;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    background-color: grey !important;
-    cursor: default;
-    pointer-events: none;
-  }
 }
 select {
   min-width: 160px;
@@ -330,7 +336,7 @@ select {
       font-weight: bold;
       font-size: clamp(1.2rem, 4vw, 2rem);
       text-align: center;
-      color: $chosen-colour;
+      color: $blue;
     }
     .game-type-wrapper {
       display: flex;
@@ -348,31 +354,23 @@ select {
         border: 1px solid #ccc;
       }
       .reset-button {
-        font-size: 0.9em;
         padding: 0.25em 0.5em;
-        border-radius: 5px;
-        border: none;
-        background-color: #dc3545;
+        background-color: $darkred;
         color: white;
-        cursor: pointer;
 
         &:hover:not(:disabled) {
-          background-color: #dc3545;
+          background-color: $darkred;
         }
       }
     }
 
     .random-button {
-      font-size: 1em;
-      padding: 0.5em 1em;
-      border-radius: 5px;
-      border: none;
-      background-color: #007bff;
+      background-color: $blue;
       color: white;
-      cursor: pointer;
+      padding: 1em 3em;
 
       &:hover:not(:disabled) {
-        background-color: #0056b3;
+        background-color: $blue;
       }
     }
   }
@@ -407,7 +405,7 @@ select {
         transform 0.3s ease;
 
       &.chosen {
-        color: $chosen-colour;
+        color: $blue;
         font-weight: bold;
         animation: winner 0.3s ease;
       }
@@ -435,14 +433,14 @@ select {
           background-color 0.3s ease;
 
         &:hover {
-          background-color: #dc3545;
+          background-color: $darkred;
         }
       }
 
       &:hover .x-circle {
         opacity: 1;
         transform: translateY(-50%) translateX(0); // slide into view
-        background-color: #dc3545;
+        background-color: $darkred;
       }
     }
   }
@@ -451,11 +449,17 @@ select {
     position: sticky;
     bottom: 0;
     background-color: #d3d3d3;
-    padding: 20px;
+    padding: 15px;
     min-height: 33vh;
     overflow-y: auto;
     padding-bottom: 3em;
     border-top: 1px solid darkgrey;
+
+    &.hidden {
+      max-height: 50px;
+      overflow-y: hidden;
+      min-height: unset;
+    }
 
     .games-custom-picker {
       display: grid;
@@ -469,7 +473,9 @@ select {
         justify-content: center;
         gap: 0.5em;
         text-align: center;
+        font-weight: normal;
         min-height: 58px;
+        color: rgb(65, 65, 65);
         transition:
           background-color 0.3s ease,
           transform 0.3s ease;
@@ -479,7 +485,7 @@ select {
     .custom-selection-wrapper {
       display: flex;
       align-items: center;
-      justify-content: space-around;
+      justify-content: space-between;
       flex-direction: row;
       gap: 0.5em;
       margin-bottom: 1em;
@@ -520,14 +526,6 @@ select {
     transition:
       opacity 2s ease,
       transform 2s ease;
-  }
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 3s ease;
-  }
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.3s ease;
   }
 
   @keyframes winner {
