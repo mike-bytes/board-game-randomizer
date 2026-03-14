@@ -31,7 +31,7 @@ export default {
     };
   },
   computed: {
-    games() {
+    selectedGames() {
       let games = this.gamesList || [];
       if (this.gameTypeChoice === GAME_TYPE.ONLINE) {
         games = games.filter((g) => g.online);
@@ -54,17 +54,21 @@ export default {
         cooperative: this.view === GAME_VIEW.COOPERATIVE ? true : null,
         competitive: this.view === GAME_VIEW.COMPETITIVE ? true : null,
         time:
-          this.view === GAME_VIEW.SHORT
-            ? 'Short'
-            : this.view === GAME_VIEW.MEDIUM
-              ? 'Medium'
-              : this.view === GAME_VIEW.LONG
-                ? 'Long'
-                : null,
+          this.view === GAME_VIEW.SHORT ||
+          this.view === GAME_VIEW.MEDIUM ||
+          this.view === GAME_VIEW.LONG
+            ? this.view
+            : null,
       });
     },
   },
   watch: {
+    selectedGames: {
+      immediate: true,
+      handler(newVal) {
+        this.displayedGames = this.shuffle(newVal);
+      },
+    },
     customGames: {
       handler(newVal) {
         localStorage.setItem('customGames', JSON.stringify(newVal));
@@ -73,12 +77,6 @@ export default {
     },
     gameTypeChoice(newVal) {
       localStorage.setItem('lastGameTypeChoice', newVal);
-    },
-    games: {
-      immediate: true,
-      handler(newVal) {
-        this.displayedGames = this.shuffle(newVal);
-      },
     },
   },
   created() {
@@ -122,19 +120,21 @@ export default {
       this.chosenGameName = null;
     },
     getRandomGame() {
-      if (!this.games.length) return null;
+      if (!this.selectedGames.length) return null;
 
       let game;
       do {
-        const randomIndex = Math.floor(Math.random() * this.games.length);
-        game = this.games[randomIndex].name;
-      } while (game === this.lastRandomGame && this.games.length > 1);
+        const randomIndex = Math.floor(
+          Math.random() * this.selectedGames.length
+        );
+        game = this.selectedGames[randomIndex].name;
+      } while (game === this.lastRandomGame && this.selectedGames.length > 1);
       this.lastRandomGame = game;
 
       return game;
     },
     async randomizeGame() {
-      if (this.isPicking || !this.games.length) return;
+      if (this.isPicking || !this.selectedGames.length) return;
       this.isPicking = true;
 
       let index = Math.floor(Math.random() * this.displayedGames.length);
@@ -199,7 +199,7 @@ export default {
       <Button
         class="random-button"
         @click="randomizeGame"
-        :disabled="isPicking || this.games.length === 0"
+        :disabled="isPicking || this.selectedGames.length === 0"
       >
         Random Game
       </Button>
@@ -217,11 +217,11 @@ export default {
         <Button
           v-if="
             removedGames.length > 0 ||
-            (gameTypeChoice === GAME_TYPE.CUSTOM && games.length > 0)
+            (gameTypeChoice === GAME_TYPE.CUSTOM && selectedGames.length > 0)
           "
           class="reset-button"
           @click="resetGames"
-          :disabled="isPicking || !games.length"
+          :disabled="isPicking || !selectedGames.length"
         >
           Reset
         </Button>
