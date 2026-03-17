@@ -1,10 +1,12 @@
 <script lang="ts">
 import GAMES_DATA from '@/data/games.json';
 import { gamesList, getAverageTime } from '@/data/games';
-import { GAME_TYPE, GAME_VIEW } from '@/helpers/constants';
 
+import { GAME_TYPE } from '@/constants/gameTypes';
+import { GAME_VIEW } from '@/constants/gameViews';
+import type { GameType } from '@/constants/gameTypes';
+import type { GameView } from '@/constants/gameViews';
 import type { Game, GamesJson } from '@/types/Game';
-import type { GameView, GameType } from '@/helpers/constants';
 
 import Button from '@/components/Button.vue';
 import GameGrid from '@/components/GameGrid.vue';

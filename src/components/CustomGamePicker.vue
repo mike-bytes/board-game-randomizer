@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { GAME_VIEW } from '@/helpers/constants';
+import { GAME_VIEW } from '@/constants/gameViews';
 import Button from '@/components/Button.vue';
 
 export default {

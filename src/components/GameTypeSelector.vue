@@ -29,7 +29,7 @@
 
 <script>
 import Button from '@/components/Button.vue';
-import { GAME_TYPE } from '@/helpers/constants';
+import { GAME_TYPE } from '@/constants/gameTypes';
 
 export default {
   name: 'GameTypeSelector',
