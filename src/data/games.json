@@ -190,5 +190,11 @@
     "inPerson": true,
     "cooperative": false,
     "time": [15, 30]
+  },
+  "Clank! Catacombs": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": true,
+    "time": [45, 90]
   }
 }

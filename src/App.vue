@@ -1,13 +1,18 @@
-<script>
-import GAMES_DATA from '../data/games.json';
+<script lang="ts">
+import GAMES_DATA from './data/games.json';
+import { gamesList } from '@/data/games';
 import { GAME_TYPE, GAME_VIEW } from '@/helpers/constants';
+
+import type { Game, GamesJson } from '@/types/Game';
+import type { GameView, GameType } from '@/helpers/constants';
+
 import Button from '@/components/Button.vue';
 import GameGrid from '@/components/GameGrid.vue';
 import GameTypeSelector from '@/components/GameTypeSelector.vue';
 import CustomGamePicker from './components/CustomGamePicker.vue';
 
 export default {
-  name: 'GameRandomizer',
+  name: 'App',
   components: {
     Button,
     GameGrid,
@@ -19,24 +24,22 @@ export default {
       GAME_TYPE, // for template access
       GAME_VIEW, // for template access
 
-      gamesList: null, // all the games from the json
+      gameTypeChoice: GAME_TYPE.ONLINE as GameType,
+      view: GAME_VIEW.ALL as GameView,
 
-      gameTypeChoice: GAME_TYPE.ONLINE,
-      view: GAME_VIEW.ALL,
+      customGames: [] as string[], // user-selected subset
+      removedGames: [] as string[], // games removed from the current selection
 
-      customGames: [], // user-selected subset
-      removedGames: [], // games removed from the current selection
-
-      displayedGames: null,
+      displayedGames: [] as Game[],
 
       isPicking: false,
-      chosenGameName: null,
-      lastRandomGame: null,
+      chosenGameName: null as string | null,
+      lastRandomGame: null as string | null,
     };
   },
   computed: {
-    selectedGames() {
-      let games = this.gamesList || [];
+    selectedGames(): Game[] {
+      let games = gamesList || [];
       if (this.gameTypeChoice === GAME_TYPE.ONLINE) {
         games = games.filter((g) => g.online);
       }
@@ -48,8 +51,8 @@ export default {
       }
       return games.filter((g) => !this.removedGames.includes(g.name));
     },
-    availableGames() {
-      let games = this.gamesList
+    availableGames(): Game[] {
+      let games = gamesList
         .filter((game) => !this.customGames.includes(game.name))
         .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -83,24 +86,20 @@ export default {
       localStorage.setItem('lastGameTypeChoice', newVal);
     },
   },
-  created() {
-    this.gamesList = Object.entries(GAMES_DATA).map(([name, data]) => ({
-      name,
-      ...data,
-    }));
-  },
   mounted() {
     const savedCustomGames = localStorage.getItem('customGames');
     if (savedCustomGames) this.customGames = JSON.parse(savedCustomGames);
     const savedChoice = localStorage.getItem('lastGameTypeChoice');
-    if (savedChoice) this.gameTypeChoice = savedChoice;
+    if (savedChoice && this.isGameType(savedChoice)) {
+      this.gameTypeChoice = savedChoice as GameType;
+    }
   },
   methods: {
     changeGameType() {
       this.chosenGameName = null;
       this.removedGames = [];
     },
-    removeGame(gameName) {
+    removeGame(gameName: string) {
       if (this.gameTypeChoice === GAME_TYPE.CUSTOM) {
         const index = this.customGames.indexOf(gameName);
         if (index !== -1) {
@@ -112,7 +111,7 @@ export default {
         }
       }
     },
-    addCustomGame(gameName) {
+    addCustomGame(gameName: string) {
       if (!this.customGames.includes(gameName)) {
         this.customGames.push(gameName);
       }
@@ -123,15 +122,15 @@ export default {
       this.removedGames = [];
       this.chosenGameName = null;
     },
-    getRandomGame() {
+    getRandomGame(): string | null {
       if (!this.selectedGames.length) return null;
 
-      let game;
+      let game: string | null;
       do {
         const randomIndex = Math.floor(
           Math.random() * this.selectedGames.length
         );
-        game = this.selectedGames[randomIndex].name;
+        game = this.selectedGames[randomIndex]?.name ?? null;
       } while (game === this.lastRandomGame && this.selectedGames.length > 1);
       this.lastRandomGame = game;
 
@@ -145,6 +144,7 @@ export default {
       let delay = 30;
       for (let i = 0; i < 75; i++) {
         const game = this.displayedGames[index % this.displayedGames.length];
+        if (!game) break;
 
         this.chosenGameName = game.name;
         this.lastRandomGame = game.name;
@@ -157,7 +157,14 @@ export default {
 
       this.isPicking = false;
     },
-    filterGames(games, criteria) {
+    filterGames(
+      games: Game[],
+      criteria: {
+        cooperative: boolean | null;
+        competitive: boolean | null;
+        time: string | null;
+      }
+    ): Game[] {
       return games.filter((game) => {
         if (criteria.cooperative && game.cooperative !== criteria.cooperative) {
           return false;
@@ -175,14 +182,16 @@ export default {
         return true;
       });
     },
-    getAverageTime(game) {
+    getAverageTime(game: Game): number {
       return (game.time[0] + game.time[1]) / 2;
     },
-    shuffle(array) {
+    shuffle(array: Game[]): Game[] {
       const a = [...array];
       for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
+        const temp: Game = a[i]!; // ! to tell TypeScript that a[i[ is never undefined
+        a[i] = a[j]!;
+        a[j] = temp;
       }
       return a;
     },
@@ -190,6 +199,9 @@ export default {
       const gamesToAdd = this.availableGames.map((g) => g.name);
       this.customGames.push(...gamesToAdd);
       this.chosenGameName = null;
+    },
+    isGameType(value: string): value is GameType {
+      return Object.values(GAME_TYPE).includes(value as GameType);
     },
   },
 };
@@ -203,7 +215,7 @@ export default {
       <Button
         class="random-button"
         @click="randomizeGame"
-        :disabled="isPicking || this.selectedGames.length === 0"
+        :disabled="isPicking || selectedGames.length === 0"
       >
         Random Game
       </Button>
