@@ -1,6 +1,6 @@
 <script lang="ts">
 import GAMES_DATA from '@/data/games.json';
-import { gamesList } from '@/data/games';
+import { gamesList, getAverageTime } from '@/data/games';
 import { GAME_TYPE, GAME_VIEW } from '@/helpers/constants';
 
 import type { Game, GamesJson } from '@/types/Game';
@@ -56,7 +56,7 @@ export default {
         .filter((game) => !this.customGames.includes(game.name))
         .sort((a, b) => a.name.localeCompare(b.name));
 
-      // only apply filters to the available games, not the chosen ones
+      // only apply filters to the available games, not the selected ones
       return this.filterGames(games, {
         cooperative: this.view === GAME_VIEW.COOPERATIVE ? true : null,
         competitive: this.view === GAME_VIEW.COMPETITIVE ? true : null,
@@ -122,20 +122,20 @@ export default {
       this.removedGames = [];
       this.chosenGameName = null;
     },
-    getRandomGame(): string | null {
-      if (!this.selectedGames.length) return null;
+    // getRandomGame(): string | null {
+    //   if (!this.selectedGames.length) return null;
 
-      let game: string | null;
-      do {
-        const randomIndex = Math.floor(
-          Math.random() * this.selectedGames.length
-        );
-        game = this.selectedGames[randomIndex]?.name ?? null;
-      } while (game === this.lastRandomGame && this.selectedGames.length > 1);
-      this.lastRandomGame = game;
+    //   let game: string | null;
+    //   do {
+    //     const randomIndex = Math.floor(
+    //       Math.random() * this.selectedGames.length
+    //     );
+    //     game = this.selectedGames[randomIndex]?.name ?? null;
+    //   } while (game === this.lastRandomGame && this.selectedGames.length > 1);
+    //   this.lastRandomGame = game;
 
-      return game;
-    },
+    //   return game;
+    // },
     async randomizeGame() {
       if (this.isPicking || !this.selectedGames.length) return;
       this.isPicking = true;
@@ -173,7 +173,7 @@ export default {
           return false;
         }
         if (criteria.time) {
-          const avg = this.getAverageTime(game);
+          const avg = getAverageTime(game);
           if (criteria.time === GAME_VIEW.SHORT && avg > 30) return false;
           if (criteria.time === GAME_VIEW.MEDIUM && (avg <= 30 || avg > 45))
             return false;
@@ -181,9 +181,6 @@ export default {
         }
         return true;
       });
-    },
-    getAverageTime(game: Game): number {
-      return (game.time[0] + game.time[1]) / 2;
     },
     shuffle(array: Game[]): Game[] {
       const a = [...array];

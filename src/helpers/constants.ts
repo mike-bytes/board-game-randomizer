@@ -13,5 +13,6 @@ export const GAME_VIEW = {
   LONG: 'Long >45min',
 } as const;
 
-export type GameType = (typeof GAME_TYPE)[keyof typeof GAME_TYPE];
-export type GameView = (typeof GAME_VIEW)[keyof typeof GAME_VIEW];
+type ValueOf<T> = T[keyof T];
+export type GameType = ValueOf<typeof GAME_TYPE>;
+export type GameView = ValueOf<typeof GAME_VIEW>;
