@@ -24,13 +24,16 @@
       </div>
     </div>
 
-    <TransitionGroup
+    <div
       v-if="!isFooterHidden"
       class="games-custom-picker"
       tag="div"
       name="custom-game"
-      :key="modelValue"
+      :key="availableGames"
     >
+      <p class="no-games" v-if="availableGames.length === 0">
+        No games displayed. Try change the filter.
+      </p>
       <Button
         v-for="game in availableGames"
         :key="game.name"
@@ -43,7 +46,7 @@
         {{ game.name }}
         <div class="plus-circle">+</div>
       </Button>
-    </TransitionGroup>
+    </div>
   </div>
 </template>
 
@@ -93,7 +96,7 @@ export default {
   bottom: 0;
   background-color: #d3d3d3;
   padding: 15px;
-  min-height: 33vh;
+  min-height: 45vh;
   overflow-y: auto;
   padding-bottom: 3em;
   border-top: 1px solid darkgrey;
@@ -102,27 +105,6 @@ export default {
     max-height: 50px;
     overflow-y: hidden;
     min-height: unset;
-  }
-
-  .games-custom-picker {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.5em;
-
-    .custom-game-item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
-      text-align: center;
-      font-weight: normal;
-      min-height: 58px;
-      color: rgb(65, 65, 65);
-      transition:
-        background-color 0.3s ease,
-        transform 0.3s ease;
-    }
   }
 
   .custom-selection-wrapper {
@@ -142,6 +124,33 @@ export default {
       padding: 0.5em;
       border-radius: 5px;
       border: 1px solid #ccc;
+    }
+  }
+
+  .games-custom-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.5em;
+
+    .no-games {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .custom-game-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+      text-align: center;
+      font-weight: normal;
+      min-height: 58px;
+      color: rgb(65, 65, 65);
+      transition:
+        background-color 0.3s ease,
+        transform 0.3s ease;
     }
   }
 

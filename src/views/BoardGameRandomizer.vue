@@ -293,42 +293,6 @@ export default {
     }
   }
 
-  /* fade on enter/leave */
-  .game-enter-from,
-  .game-leave-to,
-  .custom-game-enter-from,
-  .custom-game-leave-to {
-    opacity: 0;
-  }
-  .game-enter-to,
-  .game-leave-from,
-  .custom-game-enter-to,
-  .custom-game-leave-from {
-    opacity: 1;
-  }
-  .game-enter-active,
-  .game-leave-active,
-  .custom-game-enter-active,
-  .custom-game-leave-active {
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s ease;
-  }
-
-  @keyframes winner {
-    0% {
-      transform: scale(1);
-    }
-    40% {
-      transform: scale(1.1);
-    }
-    70% {
-      transform: scale(1.05);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
   @media (max-width: 600px) {
     .random-button {
       width: 75%;

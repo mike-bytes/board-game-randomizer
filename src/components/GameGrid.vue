@@ -1,6 +1,6 @@
 <template>
   <TransitionGroup
-    name="game"
+    name="game-item"
     tag="div"
     :class="['game-grid', { isPicking: isPicking }]"
     :key="gameTypeChoice"
@@ -121,6 +121,37 @@ export default {
       opacity: 1;
       transform: translateY(-50%) translateX(0); // slide into view
       background-color: $darkred;
+    }
+  }
+
+  // fade on enter/leave
+  .game-item-enter-from,
+  .game-item-leave-to {
+    opacity: 0;
+  }
+  .game-item-enter-to,
+  .game-item-leave-from {
+    opacity: 1;
+  }
+  .game-item-enter-active,
+  .game-item-leave-active {
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  @keyframes winner {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.1);
+    }
+    70% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
     }
   }
 
