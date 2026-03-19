@@ -97,10 +97,6 @@ export default {
     }
   },
   methods: {
-    changeGameType() {
-      this.chosenGameName = null;
-      this.removedGames = [];
-    },
     removeGame(gameName: string) {
       if (this.gameTypeChoice === GAME_TYPE.CUSTOM) {
         const index = this.customGames.indexOf(gameName);
@@ -223,7 +219,6 @@ export default {
         :selectedGames="selectedGames"
         :removedGames="removedGames"
         :isPicking="isPicking"
-        @change-game-type="changeGameType"
         @reset-games="resetGames"
       />
     </div>
