@@ -196,5 +196,23 @@
     "inPerson": true,
     "cooperative": true,
     "time": [45, 90]
+  },
+  "Multiplayer Whack-a-Mole": {
+    "online": true,
+    "inPerson": false,
+    "cooperative": false,
+    "time": [10, 10]
+  },
+  "Dialed.gg": {
+    "online": true,
+    "inPerson": false,
+    "cooperative": false,
+    "time": [10, 10]
+  },
+  "Flamecraft Duals": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 45]
   }
 }
