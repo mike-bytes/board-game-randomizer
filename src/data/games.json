@@ -214,5 +214,17 @@
     "inPerson": true,
     "cooperative": false,
     "time": [30, 45]
+  },
+  "Ticket to Ride: Africa": {
+    "online": true,
+    "inPerson": false,
+    "cooperative": false,
+    "time": [30, 60]
+  },
+  "7 Wonders": {
+    "online": false,
+    "inPerson": true,
+    "cooperative": false,
+    "time": [30, 30]
   }
 }
