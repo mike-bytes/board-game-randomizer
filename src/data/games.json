@@ -89,12 +89,6 @@
     "cooperative": false,
     "time": [30, 45]
   },
-  "Ticket to Ride": {
-    "online": false,
-    "inPerson": true,
-    "cooperative": false,
-    "time": [30, 60]
-  },
   "Critter Kitchen": {
     "online": false,
     "inPerson": true,
@@ -148,12 +142,6 @@
     "inPerson": true,
     "cooperative": false,
     "time": [15, 30]
-  },
-  "Summer Camp": {
-    "online": false,
-    "inPerson": true,
-    "cooperative": false,
-    "time": [30, 45]
   },
   "Parks": {
     "online": false,
